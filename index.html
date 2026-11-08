@@ -995,7 +995,7 @@ const FIREBASE_CONFIG = {
   appId: "1:595059819949:web:ff84369bbd2b2d72268d24"
 };
 window.CLOUD={enabled:!!FIREBASE_CONFIG,user:null,status:''};
-if(FIREBASE_CONFIG){
+if(FIREBASE_CONFIG)try{
   const V='10.12.2';
   const {initializeApp}=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
   const {getAuth,GoogleAuthProvider,signInWithPopup,signInWithRedirect,onAuthStateChanged,signOut}=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
@@ -1032,7 +1032,7 @@ if(FIREBASE_CONFIG){
     render();
   });
   renderNav();
-}
+}catch(e){console.warn('Firebase unavailable — local mode',e);CLOUD.enabled=false;renderNav()}
 </script>
 </body>
 </html>
