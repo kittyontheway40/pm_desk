@@ -19,12 +19,12 @@
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{font-family:'IBM Plex Sans Thai',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{font-family:'IBM Plex Sans Thai',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(700px 420px at 100% -5%,#fbe6f4 0,transparent 70%),radial-gradient(600px 460px at -5% 105%,#e2f8ee 0,transparent 70%),radial-gradient(500px 300px at 40% 0,#f1ebff 0,transparent 70%)}
 button{font:inherit;cursor:pointer;color:inherit}
 input,select,textarea{font:inherit;color:inherit}
-h3{margin:0;font-size:16px;font-weight:600}
+h3{margin:0;font-size:18px;font-weight:600}
 .muted{color:var(--muted)}
 .sp{flex:1}
 
@@ -32,17 +32,17 @@ h3{margin:0;font-size:16px;font-weight:600}
 .app{display:flex;min-height:100vh}
 .side{width:236px;flex-shrink:0;padding:22px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:3px;border-right:1px solid var(--line);background:rgba(255,255,255,.72);backdrop-filter:blur(10px)}
 .brand{display:flex;align-items:center;gap:11px;padding:2px 10px 20px}
-.logo{width:38px;height:38px;border-radius:12px;background:var(--grad);display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px;box-shadow:0 6px 16px -6px rgba(200,120,230,.7)}
-.brand b{display:block;font-size:16px;line-height:1.2}.brand small{color:var(--muted);font-size:12px}
+.logo{width:38px;height:38px;border-radius:12px;background:var(--grad);display:grid;place-items:center;color:#fff;font-weight:700;font-size:17px;box-shadow:0 6px 16px -6px rgba(200,120,230,.7)}
+.brand b{display:block;font-size:18px;line-height:1.2}.brand small{color:var(--muted);font-size:13.5px}
 .nav-btn{display:flex;align-items:center;gap:11px;padding:10px 12px;border:0;background:none;border-radius:12px;color:var(--muted);font-weight:500;text-align:left;width:100%;transition:.15s}
 .nav-btn:hover{background:var(--soft);color:var(--ink)}
 .nav-btn.on{background:var(--ps);color:#6d3fe0}
-.nav-btn .cnt{margin-left:auto;font-size:11px;background:var(--pks);color:var(--pk);padding:0 7px;border-radius:99px;font-weight:600}
-.side-foot{margin-top:auto;font-size:12px;color:var(--muted);padding:10px 12px;line-height:1.5}
+.nav-btn .cnt{margin-left:auto;font-size:12.5px;background:var(--pks);color:var(--pk);padding:0 7px;border-radius:99px;font-weight:600}
+.side-foot{margin-top:auto;font-size:13.5px;color:var(--muted);padding:10px 12px;line-height:1.5}
 .wrap{flex:1;min-width:0}
 .top{display:flex;align-items:center;gap:12px;padding:22px 30px 6px;flex-wrap:wrap}
-.top h1{font-size:23px;margin:0;font-weight:600;display:flex;align-items:center;gap:8px;line-height:1.3}
-.top .sub{color:var(--muted);font-size:13px;margin-top:2px}
+.top h1{font-size:26px;margin:0;font-weight:600;display:flex;align-items:center;gap:8px;line-height:1.3}
+.top .sub{color:var(--muted);font-size:14.5px;margin-top:2px}
 .top .acts{display:flex;gap:8px;margin-left:auto}
 main{padding:14px 30px 110px}
 .bnav,.fab{display:none}
@@ -56,9 +56,9 @@ main{padding:14px 30px 110px}
 .btn.ghost{border-color:transparent;background:transparent}
 .btn.ghost:hover{background:var(--soft)}
 .btn.danger{color:var(--red)}
-.btn.sm{padding:5px 10px;font-size:13px;border-radius:10px}
+.btn.sm{padding:5px 10px;font-size:14.5px;border-radius:10px}
 .back{padding:4px 6px}
-.x{border:0;background:none;color:var(--muted);font-size:20px;line-height:1;padding:2px 6px;border-radius:8px}
+.x{border:0;background:none;color:var(--muted);font-size:22.5px;line-height:1;padding:2px 6px;border-radius:8px}
 .x:hover{background:var(--pks);color:var(--pk)}
 
 /* cards */
@@ -71,18 +71,18 @@ main{padding:14px 30px 110px}
 .two{grid-template-columns:1.25fr 1fr;align-items:start}
 .stat{padding:16px 18px;position:relative;overflow:hidden}
 .stat .ico{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;margin-bottom:8px;background:var(--ps);color:var(--p)}
-.stat .k{color:var(--muted);font-size:13px}
-.stat .v{font-size:30px;font-weight:600;line-height:1.15}
+.stat .k{color:var(--muted);font-size:14.5px}
+.stat .v{font-size:34px;font-weight:600;line-height:1.15}
 .stat.r .ico{background:var(--pks);color:var(--pk)}
 .stat.g .ico{background:var(--gs);color:var(--g)}
 .stat.a .ico{background:#f3e8ff;color:#a855f7}
-.banner{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:linear-gradient(90deg,#f5f0ff,#fdf0f7);border:1px dashed #d8c8fb;margin-bottom:16px;font-size:14px;flex-wrap:wrap}
-.empty{color:var(--muted);font-size:14px;padding:14px 4px;text-align:center}
-.lbl{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:12px 0 4px}
+.banner{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:14px;background:linear-gradient(90deg,#f5f0ff,#fdf0f7);border:1px dashed #d8c8fb;margin-bottom:16px;font-size:16px;flex-wrap:wrap}
+.empty{color:var(--muted);font-size:16px;padding:14px 4px;text-align:center}
+.lbl{font-size:13.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin:12px 0 4px}
 .lbl.late{color:var(--red)}
 
 /* chips */
-.chip{--c:#888;display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:500;color:var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);padding:1px 9px;border-radius:99px;white-space:nowrap}
+.chip{--c:#888;display:inline-flex;align-items:center;gap:4px;font-size:13.5px;font-weight:500;color:var(--c);background:color-mix(in srgb,var(--c) 12%,#fff);padding:1px 9px;border-radius:99px;white-space:nowrap}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
 
 /* project rows (dashboard) */
@@ -92,11 +92,11 @@ main{padding:14px 30px 110px}
 .prow-top b{font-weight:500;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bar{height:7px;border-radius:99px;background:#f1edf8;overflow:hidden}
 .bar i{display:block;height:100%;border-radius:99px;transition:width .4s}
-.meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:12.5px;color:var(--muted);margin-top:4px}
+.meta{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:14px;color:var(--muted);margin-top:4px}
 .meta span{display:inline-flex;align-items:center;gap:3px}
 .sbar{display:flex;height:12px;border-radius:99px;overflow:hidden;margin:12px 0 10px;background:#f1edf8}
 .sbar i{display:block;height:100%}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14.5px;color:var(--muted)}
 .legend b{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}
 
 /* task rows */
@@ -118,7 +118,7 @@ main{padding:14px 30px 110px}
 
 /* projects */
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.tab{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 14px;font-size:13.5px;color:var(--muted)}
+.tab{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 14px;font-size:15.5px;color:var(--muted)}
 .tab.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .pgrid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
 .pcard{cursor:pointer;padding:0;overflow:hidden;transition:.18s;display:flex;flex-direction:column}
@@ -126,20 +126,20 @@ main{padding:14px 30px 110px}
 .pc-stripe{height:6px}
 .pc-body{padding:16px 18px 14px;display:flex;flex-direction:column;gap:8px;flex:1}
 .pc-head{display:flex;gap:6px;flex-wrap:wrap}
-.pcard h3{font-size:16.5px;line-height:1.4}
-.pc-sub{font-size:13px;color:var(--muted)}
+.pcard h3{font-size:18.5px;line-height:1.4}
+.pc-sub{font-size:14.5px;color:var(--muted)}
 .pc-prog{display:flex;align-items:center;gap:10px;margin-top:auto}
 .pc-prog .bar{flex:1}
-.pc-prog b{font-size:14px;font-weight:600;min-width:38px;text-align:right}
-.pc-foot{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding:10px 18px;flex-wrap:wrap}
+.pc-prog b{font-size:16px;font-weight:600;min-width:38px;text-align:right}
+.pc-foot{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding:10px 18px;flex-wrap:wrap}
 .pc-foot span{display:inline-flex;align-items:center;gap:4px}
 .late{color:var(--red)}
 .phero{margin-bottom:16px;position:relative;overflow:hidden}
 .phero::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--pc)}
 .phero .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .kv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:12px 0 14px}
-.kv div small{display:block;font-size:12px;color:var(--muted)}
-.kv div b{font-weight:500;font-size:14px}
+.kv div small{display:block;font-size:13.5px;color:var(--muted)}
+.kv div b{font-weight:500;font-size:16px}
 .bigbar{height:10px;border-radius:99px;background:#f1edf8;overflow:hidden}
 .bigbar i{display:block;height:100%;background:linear-gradient(90deg,var(--pc),color-mix(in srgb,var(--pc) 55%,#f9a8d4));border-radius:99px}
 .qadd{display:flex;gap:8px;margin-bottom:6px}
@@ -147,9 +147,9 @@ main{padding:14px 30px 110px}
 .nform{display:grid;gap:8px;margin-bottom:12px}
 .nform button{justify-self:end}
 .note{border-left:3px solid #d8c8fb;padding:6px 12px;margin:10px 0;background:linear-gradient(90deg,#faf7ff,transparent);border-radius:0 10px 10px 0}
-.nd{display:flex;align-items:center;font-size:12.5px;color:var(--p);font-weight:500}
-.nd .x{margin-left:auto;font-size:16px}
-.nt{white-space:pre-wrap;font-size:14px}
+.nd{display:flex;align-items:center;font-size:14px;color:var(--p);font-weight:500}
+.nd .x{margin-left:auto;font-size:18px}
+.nt{white-space:pre-wrap;font-size:16px}
 
 /* inputs */
 input[type=text],input[type=date],input:not([type]),select,textarea{border:1px solid var(--line);background:#fff;border-radius:11px;padding:8px 11px;outline:none;width:100%;transition:.15s}
@@ -165,84 +165,84 @@ textarea{resize:vertical}
 .kanban{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:14px;align-items:start}
 .kcol{background:rgba(247,244,255,.75);border:1px solid var(--line);border-radius:var(--r);padding:12px;min-height:200px;transition:.15s}
 .kcol.over{background:#efe7ff;border-color:var(--p2)}
-.kh{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;padding:2px 4px 10px}
-.kn{background:#fff;border-radius:99px;font-size:12px;padding:0 8px;color:var(--muted);font-weight:500}
+.kh{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px;padding:2px 4px 10px}
+.kn{background:#fff;border-radius:99px;font-size:13.5px;padding:0 8px;color:var(--muted);font-weight:500}
 .kadd{margin-left:auto;padding:3px 6px}
 .klist{display:flex;flex-direction:column;gap:9px}
 .kcard{background:#fff;border:1px solid var(--line);border-left:4px solid var(--pc);border-radius:13px;padding:10px 12px;cursor:grab;box-shadow:0 2px 8px -6px rgba(90,60,160,.3);transition:.15s}
 .kcard:hover{box-shadow:0 8px 18px -10px rgba(90,60,160,.4)}
 .kcard.drag{opacity:.45}
 .kcard.od{background:linear-gradient(180deg,#fff,#fff7fa)}
-.kp{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.kt{font-weight:500;font-size:14px;line-height:1.4;margin:1px 0 2px}
-.av{width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;font-size:11px;display:inline-grid!important;place-items:center;font-weight:600;margin-left:auto}
+.kp{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kt{font-weight:500;font-size:16px;line-height:1.4;margin:1px 0 2px}
+.av{width:22px;height:22px;border-radius:50%;background:var(--grad);color:#fff;font-size:12.5px;display:inline-grid!important;place-items:center;font-weight:600;margin-left:auto}
 .adv{border:0;background:var(--soft);border-radius:7px;padding:2px 5px;color:var(--p);display:inline-grid;place-items:center}
 .adv:hover{background:var(--ps)}
-.kempty{font-size:13px;color:#b8afcc;text-align:center;padding:22px 0;border:1.5px dashed #e3dbf3;border-radius:12px}
+.kempty{font-size:14.5px;color:#b8afcc;text-align:center;padding:22px 0;border:1.5px dashed #e3dbf3;border-radius:12px}
 
 /* calendar */
 .calh{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.calh h3{font-size:18px;min-width:150px;text-align:center}
+.calh h3{font-size:20.5px;min-width:150px;text-align:center}
 .cgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border-top:1px solid var(--line);border-left:1px solid var(--line);border-radius:12px;overflow:hidden}
-.cw{font-size:12px;color:var(--muted);text-align:center;padding:6px 0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--soft);font-weight:500}
+.cw{font-size:13.5px;color:var(--muted);text-align:center;padding:6px 0;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--soft);font-weight:500}
 .cd{min-height:104px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:5px;cursor:pointer;display:flex;flex-direction:column;gap:3px;transition:.12s;min-width:0}
 .cd:hover{background:#fcfaff}
 .cd.out{background:#fdfcff}.cd.out .cdn{color:#cfc8dd}
-.cdn{font-size:12.5px;font-weight:500;width:24px;height:24px;display:grid;place-items:center;border-radius:50%}
+.cdn{font-size:14px;font-weight:500;width:24px;height:24px;display:grid;place-items:center;border-radius:50%}
 .cd.today .cdn{background:linear-gradient(135deg,#8b5cf6,#d946ef);color:#fff}
-.cev{--c:#a78bfa;font-size:11.5px;background:color-mix(in srgb,var(--c) 14%,#fff);color:color-mix(in srgb,var(--c) 80%,#2b2540);border-radius:6px;padding:1px 6px;display:flex;align-items:center;gap:3px;min-width:0}
+.cev{--c:#a78bfa;font-size:13px;background:color-mix(in srgb,var(--c) 14%,#fff);color:color-mix(in srgb,var(--c) 80%,#2b2540);border-radius:6px;padding:1px 6px;display:flex;align-items:center;gap:3px;min-width:0}
 .cev span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cev.pe{background:var(--c);color:#fff;font-weight:500}
 .cev.dn{opacity:.5;text-decoration:line-through}
 .mlist{margin-top:16px}
 .mday{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
 .mday:last-child{border:0}
-.mdate{width:54px;flex-shrink:0;text-align:center;font-size:12px;color:var(--muted)}
-.mdate b{display:block;font-size:20px;color:var(--ink);font-weight:600;line-height:1.1}
+.mdate{width:54px;flex-shrink:0;text-align:center;font-size:13.5px;color:var(--muted)}
+.mdate b{display:block;font-size:22.5px;color:var(--ink);font-weight:600;line-height:1.1}
 .mday .items{flex:1;min-width:0}
 
 /* timeline */
 .tl{overflow-x:auto}
 .tl-in{min-width:820px}
 .tl-head,.tl-row{display:flex}
-.tl-name{width:220px;flex-shrink:0;padding:10px 12px 10px 0;font-size:13.5px;display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:500;min-width:0}
+.tl-name{width:220px;flex-shrink:0;padding:10px 12px 10px 0;font-size:15.5px;display:flex;align-items:center;gap:7px;cursor:pointer;font-weight:500;min-width:0}
 .tl-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tl-name i{width:9px;height:9px;border-radius:3px;flex-shrink:0}
 .tl-track{flex:1;position:relative;min-height:46px;border-bottom:1px solid var(--line)}
 .tl-months{flex:1;position:relative;height:30px;border-bottom:1px solid var(--line)}
-.tl-m{position:absolute;top:0;bottom:0;font-size:12px;color:var(--muted);padding:6px 6px;border-left:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.tl-m{position:absolute;top:0;bottom:0;font-size:13.5px;color:var(--muted);padding:6px 6px;border-left:1px solid var(--line);white-space:nowrap;overflow:hidden}
 .tl-g{position:absolute;top:0;bottom:0;border-left:1px dashed #f0ebf8}
 .tl-bar{position:absolute;top:11px;height:24px;border-radius:99px;background:color-mix(in srgb,var(--c) 20%,#fff);border:1px solid color-mix(in srgb,var(--c) 40%,#fff);overflow:hidden;cursor:pointer}
 .tl-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--c);opacity:.85}
-.tl-bar span{position:relative;font-size:11.5px;font-weight:600;padding:0 9px;line-height:22px;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.25)}
+.tl-bar span{position:relative;font-size:13px;font-weight:600;padding:0 9px;line-height:22px;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.25)}
 .tl-bar span.lo{color:color-mix(in srgb,var(--c) 75%,#2b2540);text-shadow:none}
 .tl-today{position:absolute;top:0;bottom:0;width:2px;background:var(--pk);z-index:2}
-.tl-today.lab::after{content:"วันนี้";position:absolute;top:-1px;left:4px;font-size:10.5px;color:var(--pk);font-weight:600;background:#fff;padding:0 3px;border-radius:4px;white-space:nowrap}
+.tl-today.lab::after{content:"วันนี้";position:absolute;top:-1px;left:4px;font-size:12px;color:var(--pk);font-weight:600;background:#fff;padding:0 3px;border-radius:4px;white-space:nowrap}
 .tl-ms{position:absolute;top:17px;width:11px;height:11px;transform:translateX(-50%) rotate(45deg);background:#fff;border:2px solid var(--c);z-index:1;cursor:pointer}
 
 /* team */
 .tgrid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
 .mhd{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.mav{width:44px;height:44px;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:600;font-size:17px}
+.mav{width:44px;height:44px;border-radius:14px;background:var(--grad);color:#fff;display:grid;place-items:center;font-weight:600;font-size:19px}
 .mhd b{display:block}.mhd small{color:var(--muted)}
 .mstats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
 .mstats div{background:var(--soft);border-radius:12px;padding:8px 10px;text-align:center}
-.mstats b{display:block;font-size:20px;font-weight:600;line-height:1.2}
-.mstats small{font-size:12px;color:var(--muted)}
+.mstats b{display:block;font-size:22.5px;font-weight:600;line-height:1.2}
+.mstats small{font-size:13.5px;color:var(--muted)}
 .mstats .r b{color:var(--red)}
 .load{height:6px;border-radius:99px;background:#f1edf8;overflow:hidden;margin:2px 0 10px}
 .load i{display:block;height:100%;background:linear-gradient(90deg,#6ee7b7,#a78bfa,#f472b6)}
 
 /* report */
 .rgrid{grid-template-columns:320px 1fr;align-items:start}
-.rp{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:14px;cursor:pointer}
+.rp{display:flex;align-items:flex-start;gap:8px;padding:5px 0;font-size:16px;cursor:pointer}
 .rp input{margin-top:5px;accent-color:var(--p)}
-#repText{font-family:inherit;font-size:14px;line-height:1.7;min-height:460px;background:#fdfcff}
-.field{display:grid;gap:4px;margin-bottom:12px;font-size:13px;color:var(--muted)}
+#repText{font-family:inherit;font-size:16px;line-height:1.7;min-height:460px;background:#fdfcff}
+.field{display:grid;gap:4px;margin-bottom:12px;font-size:14.5px;color:var(--muted)}
 
 /* settings */
 .sgrid{grid-template-columns:repeat(auto-fill,minmax(320px,1fr));align-items:start}
-.sgrid p{font-size:14px;color:var(--muted);margin:6px 0 12px}
+.sgrid p{font-size:16px;color:var(--muted);margin:6px 0 12px}
 .brow{display:flex;gap:8px;flex-wrap:wrap}
 
 /* modal */
@@ -251,16 +251,16 @@ textarea{resize:vertical}
 .mbox{background:#fff;border-radius:22px;width:100%;max-width:560px;max-height:92vh;overflow:auto;box-shadow:0 30px 60px -20px rgba(60,30,120,.4);animation:pop .18s ease-out}
 @keyframes pop{from{transform:translateY(10px) scale(.98);opacity:0}}
 .mhead{display:flex;align-items:center;padding:18px 22px 6px}
-.mhead h3{font-size:18px;flex:1}
+.mhead h3{font-size:20.5px;flex:1}
 #mform{padding:8px 22px 20px;display:grid;gap:12px}
-#mform label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+#mform label{display:grid;gap:4px;font-size:14.5px;color:var(--muted);font-weight:500}
 .frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 .mfoot{display:flex;gap:8px;align-items:center;padding-top:6px}
 .swatches{display:flex;gap:8px;flex-wrap:wrap}
 .sw input{display:none}
 .sw span{display:block;width:28px;height:28px;border-radius:9px;cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
 .sw input:checked+span{box-shadow:0 0 0 2px var(--ink)}
-#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:60}
+#toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-size:16px;opacity:0;pointer-events:none;transition:.25s;z-index:60}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
 /* planner */
@@ -274,47 +274,47 @@ body.is-dragging,body.is-dragging *{user-select:none!important;-webkit-user-sele
 .inbox{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;transition:.15s}
 .dump{display:grid;gap:8px;margin-bottom:10px}
 .inbox .ch h3{white-space:nowrap}
-.dump textarea{min-height:72px;background:linear-gradient(180deg,#fff,#fdfbff)}
-.drow{display:flex;gap:8px}.drow select{flex:1;min-width:0;font-size:13px;padding:5px 8px}
-select.mini{width:auto;max-width:140px;font-size:12.5px;padding:4px 8px}
+.dump textarea{min-height:86px;background:linear-gradient(180deg,#fff,#fdfbff)}
+.drow{display:flex;gap:8px}.drow select{flex:1;min-width:0;font-size:14.5px;padding:5px 8px}
+select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
 .icard{display:flex;gap:6px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-left:4px solid var(--pc);border-radius:12px;padding:8px 8px 8px 4px;margin-bottom:8px;transition:.15s}
 .icard:hover{box-shadow:0 6px 16px -10px rgba(90,60,160,.4)}
-.icard .tt{font-size:14px}
+.icard .tt{font-size:16px}
 .pick{border:0;background:var(--soft);color:var(--p);border-radius:9px;padding:6px;display:grid;place-items:center;flex-shrink:0}
 .pick:hover{background:var(--ps)}
 .stale{background:#fff9ef;border:1px solid #fbe3b9;border-radius:14px;padding:10px 10px 4px;margin:4px 0 12px}
-.hint{font-size:12px;color:var(--muted);text-align:center;padding:8px 0 2px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}
+.hint{font-size:13.5px;color:var(--muted);text-align:center;padding:8px 0 2px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap}
 .calbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.calbar h3{font-size:17px;min-width:150px;text-align:center;white-space:nowrap}
+.calbar h3{font-size:19px;min-width:150px;text-align:center;white-space:nowrap}
 .seg{display:inline-flex;background:var(--ps);border-radius:11px;padding:3px}
-.seg button{border:0;background:none;padding:5px 13px;border-radius:9px;font-size:13px;color:var(--muted);font-weight:500}
+.seg button{border:0;background:none;padding:5px 13px;border-radius:9px;font-size:14.5px;color:var(--muted);font-weight:500}
 .seg button.on{background:#fff;color:#6d3fe0;box-shadow:0 2px 6px -2px rgba(90,60,160,.3)}
 .week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
 .day{background:rgba(255,255,255,.88);border:1px solid var(--line);border-radius:15px;min-height:420px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0;transition:.12s}
 .day.today{border-color:#cbb6fb;background:linear-gradient(180deg,#f4edff,#fff 140px)}
 .day.wkend{background:rgba(253,250,255,.9)}
 .dh{display:flex;align-items:center;gap:6px;padding:0 2px 4px}
-.dh b{font-size:21px;font-weight:600;line-height:1}
-.dh small{color:var(--muted);font-size:12px;line-height:1.2}
+.dh b{font-size:23.5px;font-weight:600;line-height:1}
+.dh small{color:var(--muted);font-size:13.5px;line-height:1.2}
 .day.today .dh b{color:#7c3aed}
 .dadd{padding:2px 4px;margin-left:auto}
-.pc2{display:flex;gap:4px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-left:3px solid var(--pc);border-radius:11px;padding:6px 6px 6px 2px;font-size:13px;line-height:1.35;transition:.15s}
+.pc2{display:flex;gap:4px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-left:3px solid var(--pc);border-radius:11px;padding:6px 6px 6px 2px;font-size:14.5px;line-height:1.35;transition:.15s}
 .pc2:hover{box-shadow:0 6px 14px -10px rgba(90,60,160,.45)}
 .pc2 .tmain{padding-top:1px}
-.pc2 .pn2{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.pc2 .pn2{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
 .pc2 .chk{width:18px;height:18px;border-radius:6px;margin-top:0}
 .pc2.done{background:#fafdfb}.pc2.done .t{text-decoration:line-through;color:var(--muted)}
 .pc2.done .chk{background:var(--g);border-color:var(--g)}
-.dl{--c:var(--red);font-size:11.5px;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:8px;padding:3px 7px;display:flex;gap:4px;align-items:center;cursor:pointer;min-width:0}
+.dl{--c:var(--red);font-size:13px;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:8px;padding:3px 7px;display:flex;gap:4px;align-items:center;cursor:pointer;min-width:0}
 .dl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dl.pe{color:#fff;background:var(--c)}
-.dz{flex:1;min-height:56px;border:1.5px dashed #ece4f8;border-radius:11px;display:grid;place-items:center;color:#cfc5e2;font-size:12px;text-align:center;padding:6px}
+.dz{flex:1;min-height:56px;border:1.5px dashed #ece4f8;border-radius:11px;display:grid;place-items:center;color:#cfc5e2;font-size:13.5px;text-align:center;padding:6px}
 .cev.pl{background:var(--c);color:#fff}
 .cev.dd{background:#fff;border:1px dashed var(--c)}
 .plan{color:#7c3aed;font-weight:500}
 .daypick{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .daypick .btn{justify-content:flex-start;padding:10px 12px}
-.daypick .btn span{margin-left:auto;font-size:12px;color:var(--muted)}
+.daypick .btn span{margin-left:auto;font-size:13.5px;color:var(--muted)}
 .daypick .btn.pri span{color:#fff;opacity:.85}
 .kcard{position:relative}
 .kgrip{position:absolute;right:6px;top:6px;padding:3px}
@@ -327,21 +327,22 @@ select.mini{width:auto;max-width:140px;font-size:12.5px;padding:4px 8px}
 @media (max-width:820px){
   .side{display:none}
   .top{padding:16px 16px 4px}
-  .top h1{font-size:20px}
+  .top h1{font-size:22.5px}
   .top .acts .hide-m{display:none}
   main{padding:10px 14px 130px}
   .card{padding:15px 15px}
-  .stat .v{font-size:26px}
+  .stat .v{font-size:29.5px}
   .bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom));overflow-x:auto;gap:2px;scrollbar-width:none}
   .bnav::-webkit-scrollbar{display:none}
-  .bnav .nav-btn{width:auto;flex-direction:column;gap:2px;font-size:11px;padding:6px 10px;min-width:64px;align-items:center;flex-shrink:0}
+  .bnav .nav-btn{width:auto;flex-direction:column;gap:2px;font-size:12.5px;padding:6px 10px;min-width:64px;align-items:center;flex-shrink:0}
   .bnav .nav-btn .cnt{display:none}
   .fab{display:grid;place-items:center;position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:18px;border:0;background:linear-gradient(135deg,#8b5cf6,#d946ef);color:#fff;box-shadow:0 12px 24px -8px rgba(168,85,247,.7);z-index:41}
   .kanban{grid-template-columns:repeat(4,82vw);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;margin:0 -14px;padding-left:14px;padding-right:14px}
   .kcol{scroll-snap-align:center}
   .toolbar select{flex:1;min-width:0}
   .week{grid-template-columns:1fr}.day{min-height:auto}.dz{min-height:40px}
-  .calbar h3{min-width:0;flex:1;font-size:15px}
+  .calbar h3{min-width:0;flex:1;font-size:16px}
+  .calbar .sp{display:none}.calbar .seg{width:100%;order:9}.calbar .seg button{flex:1}
   .cd{min-height:58px;padding:3px}
   .cev{width:7px;height:7px;padding:0;border-radius:50%;background:var(--c);display:inline-block}
   .cev svg,.cev span{display:none}
@@ -424,50 +425,20 @@ const COLORS=['#8b5cf6','#ec4899','#10b981','#a855f7','#f472b6','#14b8a6','#6366
 
 /* ================== data ================== */
 function newTaskObj(o={}){return Object.assign({id:uid(),title:'',projectId:'',assignee:'me',status:'todo',prio:'med',due:'',plan:'',notes:'',created:todayISO()},o)}
-function seed(){
-  const t=todayISO(),d=n=>addDays(t,n);
-  const P=(id,name,client,manager,status,s,e,color,desc)=>({id,name,client,manager,status,start:d(s),end:d(e),color,desc,notes:[]});
-  const projects=[
-    P('p1','รายงานสิ่งแวดล้อมลุ่มน้ำ (ตัวอย่าง)','หน่วยงาน ก','ผู้จัดการ A','active',-150,75,COLORS[0],'โครงการตัวอย่าง — แก้ไขหรือลบได้'),
-    P('p2','แผนหลักการบริหารจัดการลุ่มน้ำ (ตัวอย่าง)','หน่วยงาน ข','ผู้จัดการ A','active',-220,35,COLORS[2],'โครงการตัวอย่าง'),
-    P('p3','ระบบจำลองน้ำท่วมเมือง (ตัวอย่าง)','','ผู้จัดการ B','active',-60,210,COLORS[1],'โครงการตัวอย่าง'),
-    P('p4','ปรับปรุงรายงาน EIA (ตัวอย่าง)','','ผู้จัดการ B','active',-40,20,COLORS[5],'โครงการตัวอย่าง'),
-    P('p5','ข้อเสนอโครงการใหม่ (ตัวอย่าง)','หน่วยงาน ค','ผู้จัดการ A','planning',-7,28,COLORS[3],'จัดทำข้อเสนอทางเทคนิค'),
-    P('p6','ข้อเสนอขอทุนวิจัย (ตัวอย่าง)','','ผู้จัดการ B','planning',-20,45,COLORS[4],'โครงการตัวอย่าง'),
-  ];
-  const T=(p,title,a,status,prio,due,doneAgo)=>{const x=newTaskObj({projectId:p,title,assignee:a,status,prio,due:due==null?'':d(due)});if(status==='done')x.completedAt=d(-(doneAgo??3));return x};
-  const tasks=[
-    T('p1','รวบรวมข้อมูลคุณภาพน้ำรายสถานี','m2','done','med',-10,8),
-    T('p1','วิเคราะห์แนวโน้มคุณภาพน้ำ','m2','doing','high',4),
-    T('p1','ร่างบทที่ 3 สภาพแวดล้อมปัจจุบัน','me','todo','med',12),
-    T('p1','เตรียมสไลด์ประชุมความก้าวหน้า','me','review','high',2),
-    T('p2','สอบเทียบแบบจำลองน้ำท่า','m2','done','high',-6,5),
-    T('p2','ร่างรายงานฉบับกลาง (Interim)','me','doing','high',-2),
-    T('p2','จัดทำแผนที่ขอบเขตลุ่มน้ำย่อย','m3','done','med',-15,12),
-    T('p2','สรุปความเห็นจากการประชุมรับฟัง','me','todo','med',9),
-    T('p3','ออกแบบโครงสร้างฐานข้อมูล','m3','doing','med',6),
-    T('p3','ตั้งค่า pipeline ข้อมูลฝน real-time','m2','todo','high',14),
-    T('p3','ทบทวนผลจำลอง 1D/2D','me','todo','low',30),
-    T('p4','ตอบข้อคิดเห็นผู้ชำนาญการ','me','doing','high',1),
-    T('p4','ปรับมาตรการลดผลกระทบ','m2','todo','med',8),
-    T('p5','ศึกษาแผนปฏิบัติราชการฉบับเดิม','me','done','med',-3,2),
-    T('p5','ร่างแนวทางและวิธีการศึกษา','me','doing','high',7),
-    T('p5','จัดทำตารางบุคลากรและแผนงาน','m2','todo','med',15),
-    T('p6','ร่าง Concept note','me','review','med',3),
-    T('p6','ประมาณการงบประมาณ','me','todo','med',20),
-  ];
-  const pl={1:0,3:0,5:-1,11:1,16:1,14:2,8:3,6:-5};Object.entries(pl).forEach(([i,n])=>tasks[i].plan=d(n));
-  ['โทรนัดประชุมทีมเรื่องแผนงานเดือนหน้า','ส่งใบเบิกค่าเดินทางลงพื้นที่','อ่านคู่มือ HEC-RAS 2D บทที่ 4','ตามไฟล์ shapefile ขอบเขตลุ่มน้ำ'].forEach((title,i)=>tasks.push(newTaskObj({title,projectId:i===3?'p2':'',prio:i===1?'high':'med'})));
-  projects[0].notes=[{id:uid(),date:d(-5),text:'ประชุมความก้าวหน้ากับผู้ว่าจ้าง\n• ขอให้เพิ่มข้อมูลคุณภาพน้ำย้อนหลัง 10 ปี\n• นัดส่งร่างบทที่ 3 ภายในสิ้นเดือน'}];
-  projects[1].notes=[{id:uid(),date:d(-2),text:'คณะกรรมการตรวจรับให้ปรับรูปแบบรายงานฉบับกลางตามเทมเพลตใหม่'}];
-  return {v:1,sample:true,owner:'',projects,tasks,
-    members:[{id:'me',name:'ฉัน',role:'Project Manager'},{id:'m2',name:'ผู้ช่วย A',role:'วิศวกรแหล่งน้ำ'},{id:'m3',name:'ผู้ช่วย B',role:'GIS'}]};
+const REAL_PROJECTS=['masterplan_ปิง','masterplan_สะแกกรัง','masterplan_แม่กลอง','weapใต้','weapเหนือ','weap68'];
+function cleanState(keep={}){
+  return {v:1,sample:false,pristine:true,updatedAt:Date.now(),owner:keep.owner||'',syncUid:keep.syncUid,lastBackup:keep.lastBackup,
+    projects:REAL_PROJECTS.map((name,i)=>({id:'r'+(i+1),name,client:'',manager:'',status:'active',start:'',end:'',color:COLORS[i%COLORS.length],desc:'',notes:[]})),
+    tasks:[],members:[{id:'me',name:'ฉัน',role:'Project Manager'}]};
 }
+// old sample data (from the first versions) is replaced by the real project list
+const isSampleData=d=>!!d&&(d.sample||(d.projects||[]).some(p=>/\(ตัวอย่าง\)/.test(p.name)||p.id==='p1'&&p.name==='รายงานสิ่งแวดล้อมลุ่มน้ำปิง'));
+const migrate=d=>isSampleData(d)?cleanState(d):d;
 function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.projects)&&Array.isArray(d.tasks))return d}}catch(e){}return null}
-function save(fromCloud){if(!fromCloud){S.updatedAt=Date.now();window.cloudPush&&window.cloudPush()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('บันทึกไม่สำเร็จ — เบราว์เซอร์อาจปิดการเก็บข้อมูล')}}
+function save(fromCloud){if(!fromCloud){S.updatedAt=Date.now();S.pristine=false;window.cloudPush&&window.cloudPush()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('บันทึกไม่สำเร็จ — เบราว์เซอร์อาจปิดการเก็บข้อมูล')}}
 function replaceState(d){Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,{members:[],projects:[],tasks:[]},d);S.projects.forEach(p=>p.notes=p.notes||[])}
 
-const S=load()||seed();
+const S=(()=>{const d=load();const m=d?migrate(d):cleanState();if(m!==d){try{localStorage.setItem(KEY,JSON.stringify(m))}catch(e){}}return m})();
 const ui={calMode:'week',wk:todayISO(),ibp:'',dumpP:'',view:'dash',proj:null,fp:'',fa:'',q:'',pf:'open',cal:new Date(),repDays:'7',repSel:null,repMgr:''};
 
 /* ================== helpers ================== */
@@ -584,7 +555,7 @@ function vProject(){
   const notes=[...(p.notes||[])].sort((a,b)=>b.date.localeCompare(a.date));
   const html=`<div class="card phero" style="--pc:${p.color}">
     <div class="chips">${chip(PSTATUS[p.status]||PSTATUS.active)}${chip(health(p))}</div>
-    ${p.desc?`<div class="muted" style="font-size:14px">${esc(p.desc)}</div>`:''}
+    ${p.desc?`<div class="muted" style="font-size:16px">${esc(p.desc)}</div>`:''}
     <div class="kv">
       <div><small>ผู้ว่าจ้าง / หน่วยงาน</small><b>${esc(p.client)||'–'}</b></div>
       <div><small>รายงานต่อ</small><b>${esc(p.manager)||'–'}</b></div>
@@ -656,9 +627,9 @@ function inboxPanel(){
   return`<div class="card inbox" data-drop="plan:">
     <div class="ch"><span style="color:var(--p)">${ic('inbox',19)}</span><h3>กองงาน</h3><span class="kn" style="background:var(--ps)">${inbox.length}</span><span class="sp"></span>
       <select class="mini" data-f="ibp" title="กรองกองงาน"><option value="">ทุกโครงการ</option>${opts(S.projects,ui.ibp)}</select></div>
-    <form data-form="dump" class="dump"><textarea name="t" placeholder="นึกอะไรได้พิมพ์โยนลงมาเลย&#10;กด Enter = เพิ่ม · วางหลายบรรทัดได้ทีเดียว"></textarea>
+    <form data-form="dump" class="dump"><textarea name="t" placeholder="พิมพ์งานที่นึกได้ แล้วกด Enter&#10;(วางหลายบรรทัดได้ทีเดียว)"></textarea>
       <div class="drow"><select name="p"><option value="">ไม่ระบุโครงการ</option>${opts(S.projects,ui.dumpP)}</select><button class="btn sm pri">${ic('plus',14)} โยนลงกอง</button></div></form>
-    ${stale.length?`<div class="stale"><div class="ch" style="margin-bottom:8px"><b style="font-size:13px;color:#b45309;display:flex;gap:4px;align-items:center">${ic('alert',14)} เลยวันที่วางแผน ${stale.length} งาน</b><span class="sp"></span><button class="btn sm" data-act="rollToday">ย้ายมาวันนี้ทั้งหมด</button></div>${stale.map(x=>icard(x,true)).join('')}</div>`:''}
+    ${stale.length?`<div class="stale"><div class="ch" style="margin-bottom:8px"><b style="font-size:14.5px;color:#b45309;display:flex;gap:4px;align-items:center">${ic('alert',14)} เลยวันที่วางแผน ${stale.length} งาน</b><span class="sp"></span><button class="btn sm" data-act="rollToday">ย้ายมาวันนี้ทั้งหมด</button></div>${stale.map(x=>icard(x,true)).join('')}</div>`:''}
     <div>${inbox.slice(0,lim).map(x=>icard(x)).join('')||'<div class="empty">กองว่างแล้ว ✨ ทุกงานมีวันที่จะทำแล้ว</div>'}</div>
     ${inbox.length>lim?`<button class="btn sm" style="width:100%;justify-content:center" data-act="ibAll">ดูอีก ${inbox.length-lim} งานในกอง</button>`:''}
     <div class="hint">ลาก ${ic('grip',13)} ไปวางในวันที่จะทำ · หรือแตะ ${ic('calendar',13)} เพื่อเลือกวัน · ลากกลับมาที่นี่ = ยกเลิกวัน</div>
@@ -781,7 +752,7 @@ function vReport(){
   </div>
   <div class="card"><div class="ch"><h3>ตัวอย่างรายงาน</h3><span class="sp"></span><button class="btn pri sm" data-act="copyReport">${ic('copy',14)} คัดลอก</button></div>
   <textarea id="repText">${esc(buildReport())}</textarea>
-  <div class="muted" style="font-size:12.5px;margin-top:8px">แก้ไขข้อความได้ก่อนคัดลอก แล้ววางใน LINE / อีเมล / Word ได้ทันที</div></div></div>`;
+  <div class="muted" style="font-size:14px;margin-top:8px">แก้ไขข้อความได้ก่อนคัดลอก แล้ววางใน LINE / อีเมล / Word ได้ทันที</div></div></div>`;
   return{title:'รายงานความก้าวหน้า',sub:'สร้างสรุปส่งหัวหน้าจากข้อมูลงานจริงในระบบ',html};
 }
 
@@ -792,8 +763,8 @@ function vSettings(){
   ${(window.CLOUD||{}).enabled?`<div class="card"><h3>ซิงก์ออนไลน์ (Firebase)</h3>${window.CLOUD.user?`<p>เข้าสู่ระบบเป็น <b>${esc(window.CLOUD.user.email)}</b><br>ข้อมูลซิงก์อัตโนมัติทุกเครื่องที่ล็อกอินบัญชีนี้ · สถานะ: ${esc(window.CLOUD.status||'')}</p><div class="brow"><button class="btn" data-act="logout">ออกจากระบบ</button></div>`:`<p>ล็อกอินด้วย Google เพื่อให้มือถือและคอมเห็นข้อมูลชุดเดียวกัน</p><div class="brow"><button class="btn pri" data-act="login">เข้าสู่ระบบด้วย Google</button></div>`}</div>`:''}
   <div class="card"><h3>สำรอง / ย้ายข้อมูล</h3><p>ข้อมูลเก็บในเบราว์เซอร์เครื่องนี้เท่านั้น ควรดาวน์โหลดไฟล์สำรองเป็นประจำ และใช้ไฟล์เดียวกันนี้ย้ายข้อมูลไปมือถือหรือเครื่องอื่น${S.lastBackup?`<br>สำรองล่าสุด: <b>${thDate(S.lastBackup,{day:'numeric',month:'long',year:'numeric'})}</b>`:''}</p>
     <div class="brow"><button class="btn" data-act="export">${ic('download',15)} ดาวน์โหลดไฟล์สำรอง</button><button class="btn" data-act="import">${ic('upload',15)} นำเข้าไฟล์</button></div></div>
-  <div class="card"><h3>จัดการข้อมูล</h3><p>โหลดข้อมูลตัวอย่างใหม่ หรือล้างทุกอย่างเพื่อเริ่มจากศูนย์ (ควรสำรองก่อน)</p>
-    <div class="brow"><button class="btn" data-act="reset">โหลดข้อมูลตัวอย่าง</button><button class="btn danger" data-act="clear">ล้างข้อมูลทั้งหมด</button></div></div>
+  <div class="card"><h3>จัดการข้อมูล</h3><p>ล้างทุกอย่างเพื่อเริ่มจากศูนย์ (ควรดาวน์โหลดไฟล์สำรองก่อน)</p>
+    <div class="brow"><button class="btn danger" data-act="clear">ล้างข้อมูลทั้งหมด</button></div></div>
   <div class="card"><h3>คีย์ลัด</h3><p><b>N</b> เพิ่มงานใหม่ · <b>Esc</b> ปิดหน้าต่าง<br>บอร์ดงาน: ลากการ์ดข้ามคอลัมน์เพื่อเปลี่ยนสถานะ</p></div>
   </div>`;
   return{title:'ตั้งค่า',html};
@@ -846,7 +817,7 @@ function taskForm(t,def={}){
   </div>
   <div class="frow"><label>วันที่จะทำ (วางแผน)<input type="date" name="plan" value="${x.plan||''}"></label><label>กำหนดส่ง (deadline)<input type="date" name="due" value="${x.due||''}"></label></div>
   <label>รายละเอียด / หมายเหตุ<textarea name="notes" rows="3" placeholder="ลิงก์ไฟล์ ข้อสั่งการ เงื่อนไข ฯลฯ">${esc(x.notes)}</textarea></label>
-  ${t&&t.completedAt?`<div class="muted" style="font-size:12.5px">เสร็จเมื่อ ${thDate(t.completedAt,{day:'numeric',month:'long',year:'numeric'})}</div>`:''}`;
+  ${t&&t.completedAt?`<div class="muted" style="font-size:14px">เสร็จเมื่อ ${thDate(t.completedAt,{day:'numeric',month:'long',year:'numeric'})}</div>`:''}`;
   modal(t?'แก้ไขงาน':'งานใหม่',body,{
     onSave:fd=>{fd.title=fd.title.trim();if(!fd.title)return false;const st=fd.status;delete fd.status;
       if(t){Object.assign(t,fd);setStatus(t,st)}else{const n=Object.assign(x,fd);n.status='';setStatus(n,st);S.tasks.push(n)}
@@ -909,7 +880,6 @@ const ACT={
   copyReport:()=>copyText($('#repText').value),
   export:()=>{S.lastBackup=todayISO();save();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download=`pm-desk-backup-${todayISO()}.json`;document.body.appendChild(a);a.click();a.remove();render();toast('ดาวน์โหลดไฟล์สำรองแล้ว')},
   import:()=>$('#fileIn').click(),
-  reset:()=>{if(confirm('แทนที่ข้อมูลปัจจุบันด้วยข้อมูลตัวอย่าง?')){replaceState(seed());ui.view='dash';save();render()}},
   clear:()=>{if(confirm('ล้างข้อมูลทั้งหมดและเริ่มใหม่? (ย้อนกลับไม่ได้)')){replaceState({v:1,sample:false,owner:S.owner||'',projects:[],tasks:[],members:[{id:'me',name:'ฉัน',role:'Project Manager'}]});ui.view='dash';ui.fp=ui.fa='';ui.repSel=null;save();render();toast('เริ่มต้นใหม่แล้ว')}},
   login:()=>window.cloudLogin&&window.cloudLogin(),
   logout:()=>{if(confirm('ออกจากระบบ? ข้อมูลในเครื่องนี้ยังอยู่ แต่จะไม่ซิงก์จนกว่าจะล็อกอินใหม่'))window.cloudLogout()},
@@ -1008,7 +978,8 @@ if(FIREBASE_CONFIG)try{
   async function push(){if(!ref)return;setStatus('กำลังบันทึก…');try{await setDoc(ref,pack());setStatus('ซิงก์แล้ว')}catch(e){console.error(e);setStatus('ซิงก์ไม่สำเร็จ (จะลองใหม่)');clearTimeout(timer);timer=setTimeout(push,5000)}}
   window.cloudPush=()=>{if(!ref)return;setStatus('รอบันทึก…');clearTimeout(timer);timer=setTimeout(push,800)};
   window.applyRemote=d=>{if(!$('#modal').classList.contains('hidden')){window.pendingRemote=d;return}
-    replaceState(d);if(ui.view==='project'&&!S.projects.some(p=>p.id===ui.proj))ui.view='projects';save(true);render()};
+    const m=migrate(d);replaceState(m);if(ui.view==='project'&&!S.projects.some(p=>p.id===ui.proj))ui.view='projects';
+    if(m!==d)save();else save(true);render()};
   window.cloudLogin=async()=>{const pv=new GoogleAuthProvider();try{await signInWithPopup(auth,pv)}catch(e){if(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment')signInWithRedirect(auth,pv);else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast('ล็อกอินไม่สำเร็จ: '+e.code)}};
   window.cloudLogout=async()=>{await signOut(auth)};
   onAuthStateChanged(auth,async user=>{
@@ -1020,7 +991,7 @@ if(FIREBASE_CONFIG)try{
       if(snap.exists()){
         const r=snap.data(),remote=JSON.parse(r.data);
         const fresh=S.sample||S.syncUid!==user.uid; // this device never synced with this account
-        const localHasData=!S.sample&&(S.tasks.length||S.projects.length);
+        const localHasData=!S.sample&&!S.pristine&&(S.tasks.length||S.projects.length);
         if(fresh&&localHasData&&!confirm('พบข้อมูลบนคลาวด์ของบัญชีนี้แล้ว\n\nตกลง = ใช้ข้อมูลบนคลาวด์ (แทนที่ข้อมูลในเครื่องนี้)\nยกเลิก = เอาข้อมูลในเครื่องนี้ขึ้นไปแทนบนคลาวด์')){S.syncUid=user.uid;save();await push()}
         else if(fresh||(r.updatedAt||0)>(S.updatedAt||0)){remote.syncUid=user.uid;applyRemote(remote);toast('โหลดข้อมูลจากคลาวด์แล้ว')}
         else if((r.updatedAt||0)<(S.updatedAt||0))await push();
