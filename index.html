@@ -256,7 +256,12 @@ textarea{resize:vertical}
 #mform label{display:grid;gap:4px;font-size:14.5px;color:var(--muted);font-weight:500}
 .frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
 .mfoot{display:flex;gap:8px;align-items:center;padding-top:6px}
-.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatches{display:flex;gap:7px;flex-wrap:wrap}
+.swg{display:grid;gap:8px}
+.swg .gl{font-size:12.5px;color:var(--muted);font-weight:400;margin-bottom:-3px}
+.sw.cus{position:relative}
+.sw.cus input[type=color]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.sw.cus span{background:conic-gradient(#f472b6,#a78bfa,#38bdf8,#34d399,#fcd34d,#f472b6)!important;display:grid!important;place-items:center;color:#fff;font-size:16px;font-weight:700}
 .sw input{display:none}
 .sw span{display:block;width:28px;height:28px;border-radius:9px;cursor:pointer;border:3px solid #fff;box-shadow:0 0 0 1px var(--line)}
 .sw input:checked+span{box-shadow:0 0 0 2px var(--ink)}
@@ -452,6 +457,12 @@ const ORDER=['todo','doing','review','done'];
 const PSTATUS={planning:{t:'วางแผน',c:'#a78bfa'},active:{t:'ดำเนินการ',c:'#8b5cf6'},hold:{t:'พักไว้',c:'#f59e0b'},done:{t:'ปิดโครงการ',c:'#10b981'}};
 const PRIO={high:{t:'ด่วน'},med:{t:'ปกติ'},low:{t:'ไม่เร่ง'}};
 const COLORS=['#8b5cf6','#ec4899','#10b981','#a855f7','#f472b6','#14b8a6','#6366f1','#f59e0b'];
+const COLOR_GROUPS=[
+  ['ม่วง',['#c4b5fd','#a78bfa','#8b5cf6','#7c3aed','#6d28d9','#a855f7','#c084fc','#9333ea']],
+  ['ชมพู / แดง',['#f9a8d4','#f472b6','#ec4899','#db2777','#e879f9','#d946ef','#fb7185','#e11d48']],
+  ['เขียว',['#6ee7b7','#34d399','#10b981','#059669','#4ade80','#22c55e','#a3e635','#65a30d']],
+  ['ฟ้า / น้ำเงิน',['#5eead4','#14b8a6','#22d3ee','#06b6d4','#38bdf8','#0ea5e9','#3b82f6','#6366f1']],
+  ['ส้ม / เหลือง / เทา',['#fcd34d','#f59e0b','#fb923c','#f97316','#ef4444','#b45309','#94a3b8','#64748b']]];
 
 /* ================== data ================== */
 function newTaskObj(o={}){return Object.assign({id:uid(),title:'',projectId:'',assignee:'me',status:'todo',prio:'med',due:'',plan:'',planEnd:'',notes:'',created:todayISO()},o)}
@@ -517,7 +528,8 @@ const ETYPE={meeting:{t:'ประชุม',c:'#6366f1',i:'team'},submit:{t:'�
 const evSort=(a,b)=>(a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99'));
 const evOn=iso=>(S.events||[]).filter(e=>e.date===iso).sort(evSort);
 function evChip(e){const ty=ETYPE[e.type]||ETYPE.other;
-  return`<div class="ev ${e.done||e.date<todayISO()?'past':''}" style="--c:${ty.c}" data-drag="ev:${e.id}" data-act="editEvent" data-id="${e.id}" title="${ty.t}${e.place?' · '+esc(e.place):''}"><span class="grip">${ic('grip',12)}</span>${ic(ty.i,13)}<span class="evt">${e.time?`<b>${e.time}</b> `:''}${esc(e.title)}</span></div>`}
+  const pc=(S.projects.find(p=>p.id===e.projectId)||{}).color;
+  return`<div class="ev ${e.done||e.date<todayISO()?'past':''}" style="--c:${ty.c};${pc?`border-left:4px solid ${pc}`:''}" data-drag="ev:${e.id}" data-act="editEvent" data-id="${e.id}" title="${ty.t}${e.place?' · '+esc(e.place):''}"><span class="grip">${ic('grip',12)}</span>${ic(ty.i,13)}<span class="evt">${e.time?`<b>${e.time}</b> `:''}${esc(e.title)}</span></div>`}
 function evWhen(e){const n=daysBetween(todayISO(),e.date);return n===0?'วันนี้':n===1?'พรุ่งนี้':n<0?thDate(e.date):'อีก '+n+' วัน · '+thDate(e.date,{weekday:'short',day:'numeric',month:'short'})}
 function evRow(e,showP=true){const ty=ETYPE[e.type]||ETYPE.other,p=S.projects.find(x=>x.id===e.projectId),n=daysBetween(todayISO(),e.date);
   return`<div class="trow ${e.done?'done':''}" data-act="editEvent" data-id="${e.id}" style="cursor:pointer"><span class="evdot" style="--c:${ty.c}">${ic(ty.i,16)}</span>
@@ -735,7 +747,7 @@ function monthView(pid){
     cells.push(`<div class="cd ${inM?'':'out'} ${iso===t?'today':''} ${pid&&!inR?'offr':''}" data-drop="plan:${iso}" data-act="addOnDay" data-d="${iso}" title="เพิ่มงานหรือนัดหมาย"><div class="cdn">${d.getDate()}</div>
       ${ps?`<div class="cev pe" style="--c:${prj.color}">${ic('flag',11)}<span>เริ่มโครงการ</span></div>`:''}
       ${pe.map(p=>`<div class="cev pe" style="--c:${p.color}" data-act="openProject" data-id="${p.id}" title="สิ้นสุดโครงการ: ${esc(p.name)}">${ic('flag',11)}<span>${pid?'สิ้นสุดโครงการ':esc(p.name)}</span></div>`).join('')}
-      ${evOn(iso).filter(fP).map(e=>`<div class="cev" style="--c:${(ETYPE[e.type]||ETYPE.other).c};font-weight:500;${e.done?'opacity:.5':''}" data-drag="ev:${e.id}" data-act="editEvent" data-id="${e.id}" title="${(ETYPE[e.type]||ETYPE.other).t}: ${esc(e.title)}">${ic((ETYPE[e.type]||ETYPE.other).i,11)}<span>${e.time?e.time+' ':''}${esc(e.title)}</span></div>`).join('')}
+      ${evOn(iso).filter(fP).map(e=>`<div class="cev" style="--c:${(ETYPE[e.type]||ETYPE.other).c};font-weight:500;${!pid&&e.projectId?`box-shadow:inset 3px 0 0 ${(S.projects.find(p=>p.id===e.projectId)||{}).color||'transparent'};`:''}${e.done?'opacity:.5':''}" data-drag="ev:${e.id}" data-act="editEvent" data-id="${e.id}" title="${(ETYPE[e.type]||ETYPE.other).t}: ${esc(e.title)}">${ic((ETYPE[e.type]||ETYPE.other).i,11)}<span>${e.time?e.time+' ':''}${esc(e.title)}</span></div>`).join('')}
       ${pl.map(x=>`<div class="cev pl ${x.status==='done'?'dn':''}" style="--c:${projOf(x)?.color||'#a78bfa'}" data-drag="${x.id}" data-act="editTask" data-id="${x.id}" title="ทำ: ${esc(x.title)}"><span>${esc(x.title)}</span></div>`).join('')}
       ${dd.map(x=>`<div class="cev dd" style="--c:${projOf(x)?.color||'#e5486f'}" data-act="editTask" data-id="${x.id}" title="ส่ง: ${esc(x.title)}">${ic('clock',11)}<span>${esc(x.title)}</span></div>`).join('')}</div>`);
   }
@@ -938,7 +950,12 @@ function projectForm(p){
   <label>รายงานต่อ (หัวหน้า/ผู้จัดการ)<input name="manager" list="mgrList" value="${esc(x.manager)}"><datalist id="mgrList">${managers().map(m=>`<option value="${esc(m)}">`).join('')}</datalist></label></div>
   <div class="frow"><label>สถานะ<select name="status">${Object.entries(PSTATUS).map(([k,v])=>`<option value="${k}" ${x.status===k?'selected':''}>${v.t}</option>`).join('')}</select></label>
   <label>วันเริ่ม<input type="date" name="start" value="${x.start||''}"></label><label>วันสิ้นสุด<input type="date" name="end" value="${x.end||''}"></label></div>
-  <label>สีประจำโครงการ<div class="swatches">${COLORS.map(c=>`<label class="sw"><input type="radio" name="color" value="${c}" ${c===x.color?'checked':''}><span style="background:${c}"></span></label>`).join('')}</div></label>
+  <div class="swg"><span style="font-size:14px;color:var(--muted);font-weight:500">สีประจำโครงการ</span>
+    ${COLOR_GROUPS.map(([g,cs])=>`<div class="gl">${g}</div><div class="swatches">${cs.map(c=>`<label class="sw" title="${c}"><input type="radio" name="color" value="${c}" ${c===x.color?'checked':''}><span style="background:${c}"></span></label>`).join('')}</div>`).join('')}
+    <div class="gl">สีอื่น (เลือกเอง)</div><div class="swatches" style="align-items:center">
+      <label class="sw"><input type="radio" name="color" id="cusRadio" value="${esc(x.color)}" ${COLOR_GROUPS.some(g=>g[1].includes(x.color))?'':'checked'}><span id="cusPrev" style="background:${esc(x.color)}"></span></label>
+      <label class="sw cus" title="เลือกสีเอง"><span>+</span><input type="color" id="cusPick" value="${/^#[0-9a-f]{6}$/i.test(x.color)?x.color:'#8b5cf6'}"></label>
+      <span class="muted" style="font-size:13px">แตะ + เพื่อเลือกสีใดก็ได้</span></div></div>
   <label>รายละเอียด<textarea name="desc" rows="2">${esc(x.desc)}</textarea></label>`;
   modal(p?'แก้ไขโครงการ':'โครงการใหม่',body,{
     onSave:fd=>{fd.name=fd.name.trim();if(!fd.name)return false;if(fd.start&&fd.end&&fd.end<fd.start){toast('วันสิ้นสุดต้องไม่ก่อนวันเริ่ม');return false}
@@ -947,6 +964,7 @@ function projectForm(p){
       save();render();toast(p?'อัปเดตโครงการแล้ว':'สร้างโครงการแล้ว')},
     onDelete:p?()=>{S.projects=S.projects.filter(y=>y.id!==p.id);S.tasks=S.tasks.filter(t=>t.projectId!==p.id);ui.view='projects';save();render();toast('ลบโครงการแล้ว')}:null,
     delText:'ลบโครงการและงานทั้งหมด'});
+  const cp=$('#cusPick'),cr=$('#cusRadio');cp&&cp.addEventListener('input',()=>{cr.value=cp.value;cr.checked=true;$('#cusPrev').style.background=cp.value});
 }
 function eventForm(e,def={}){
   const x=e||Object.assign({id:uid(),title:'',type:'meeting',date:todayISO(),time:'',timeEnd:'',place:'',projectId:'',notes:'',done:false},def);
