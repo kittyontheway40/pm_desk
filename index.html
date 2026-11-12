@@ -323,6 +323,16 @@ select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
 @media (max-width:1800px){.week{grid-template-columns:repeat(4,minmax(0,1fr))}.day{min-height:240px}}
 @media (max-width:1100px){.plan-wrap{grid-template-columns:1fr}.inbox{position:static;max-height:none}}
 
+/* events */
+.ev{--c:#6366f1;display:flex;align-items:center;gap:4px;font-size:13px;background:color-mix(in srgb,var(--c) 11%,#fff);color:color-mix(in srgb,var(--c) 85%,#2b2540);border:1px solid color-mix(in srgb,var(--c) 28%,#fff);border-radius:9px;padding:4px 7px 4px 3px;cursor:pointer;min-width:0;line-height:1.3}
+.ev .evt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.past{opacity:.5}
+.ev .grip{padding:0;color:inherit;opacity:.55}
+.evdot{--c:#6366f1;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c)}
+#mform .etype label{display:inline-flex;align-items:center;gap:5px;font-size:15px;color:var(--ink);cursor:pointer}
+.etype .pchip.on{background:color-mix(in srgb,var(--c) 14%,#fff);border-color:var(--c);color:var(--c)}
+.chooser .btn{flex-direction:column;align-items:flex-start;gap:4px;padding:14px;white-space:normal;text-align:left}
+.chooser .btn small{color:var(--muted);font-weight:400;font-size:13px}
 /* people */
 .pchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:-4px}
 .pchip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:3px 12px;font-size:14px;color:var(--ink)}
@@ -445,16 +455,17 @@ const REAL_PROJECTS=['masterplan_ปิง','masterplan_สะแกกรัง
 function cleanState(keep={}){
   return {v:1,sample:false,pristine:true,updatedAt:Date.now(),owner:keep.owner||'',syncUid:keep.syncUid,lastBackup:keep.lastBackup,
     projects:REAL_PROJECTS.map((name,i)=>({id:'r'+(i+1),name,client:'',manager:'',status:'active',start:'',end:'',color:COLORS[i%COLORS.length],desc:'',notes:[]})),
-    tasks:[],members:[{id:'me',name:'ฉัน',role:'Project Manager'}]};
+    tasks:[],events:[],members:[{id:'me',name:'ฉัน',role:'Project Manager'}]};
 }
 // old sample data (from the first versions) is replaced by the real project list
 const isSampleData=d=>!!d&&(d.sample||(d.projects||[]).some(p=>/\(ตัวอย่าง\)/.test(p.name)||p.id==='p1'&&p.name==='รายงานสิ่งแวดล้อมลุ่มน้ำปิง'));
 const migrate=d=>isSampleData(d)?cleanState(d):d;
 function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&Array.isArray(d.projects)&&Array.isArray(d.tasks))return d}}catch(e){}return null}
 function save(fromCloud){if(!fromCloud){S.updatedAt=Date.now();S.pristine=false;window.cloudPush&&window.cloudPush()}try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('บันทึกไม่สำเร็จ — เบราว์เซอร์อาจปิดการเก็บข้อมูล')}}
-function replaceState(d){Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,{members:[],projects:[],tasks:[]},d);S.projects.forEach(p=>p.notes=p.notes||[])}
+function replaceState(d){Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,{members:[],projects:[],tasks:[],events:[]},d);S.projects.forEach(p=>p.notes=p.notes||[])}
 
-const S=(()=>{const d=load();const m=d?migrate(d):cleanState();if(m!==d){try{localStorage.setItem(KEY,JSON.stringify(m))}catch(e){}}return m})();
+const S0=(()=>{const d=load();const m=d?migrate(d):cleanState();if(m!==d){try{localStorage.setItem(KEY,JSON.stringify(m))}catch(e){}}return m})();
+const S=S0;S.events=S.events||[];
 const ui={tp:'',calMode:'week',wk:todayISO(),ibp:'',dumpP:'',view:'dash',proj:null,fp:'',fa:'',q:'',pf:'open',cal:new Date(),repDays:'7',repSel:null,repMgr:''};
 
 /* ================== helpers ================== */
@@ -471,7 +482,7 @@ function health(p){
   if(p.status==='hold')return{t:'พักไว้',c:'#f59e0b'};
   const t=todayISO(),pr=progress(p.id);
   if(p.end&&t>p.end)return{t:'เลยกำหนดโครงการ',c:'#e5486f'};
-  if(p.start&&p.end&&t>=p.start){const tot=daysBetween(p.start,p.end)||1;const el=daysBetween(p.start,t)/tot*100;if(el-pr>25)return{t:'เสี่ยงล่าช้า',c:'#f59e0b'}}
+  if(p.start&&p.end&&t>=p.start&&projTasks(p.id).length){const tot=daysBetween(p.start,p.end)||1;const el=daysBetween(p.start,t)/tot*100;if(el-pr>25)return{t:'เสี่ยงล่าช้า',c:'#f59e0b'}}
   if(projTasks(p.id).some(isOverdue))return{t:'มีงานเกินกำหนด',c:'#f59e0b'};
   return{t:'ตามแผน',c:'#10b981'};
 }
@@ -498,6 +509,18 @@ function memberIdByName(name,quiet){
   const m=S.members.find(x=>x.name.toLowerCase()===name.toLowerCase());if(m)return m.id;
   const n={id:uid(),name,role:''};S.members.push(n);if(!quiet)toast('เพิ่ม “'+name+'” เข้าทีมแล้ว');return n.id;
 }
+const ETYPE={meeting:{t:'ประชุม',c:'#6366f1',i:'team'},submit:{t:'ส่งงาน / รายงาน',c:'#ec4899',i:'flag'},other:{t:'นัดหมายอื่น',c:'#10b981',i:'calendar'}};
+const evSort=(a,b)=>(a.date+(a.time||'99')).localeCompare(b.date+(b.time||'99'));
+const evOn=iso=>(S.events||[]).filter(e=>e.date===iso).sort(evSort);
+function evChip(e){const ty=ETYPE[e.type]||ETYPE.other;
+  return`<div class="ev ${e.done||e.date<todayISO()?'past':''}" style="--c:${ty.c}" data-drag="ev:${e.id}" data-act="editEvent" data-id="${e.id}" title="${ty.t}${e.place?' · '+esc(e.place):''}"><span class="grip">${ic('grip',12)}</span>${ic(ty.i,13)}<span class="evt">${e.time?`<b>${e.time}</b> `:''}${esc(e.title)}</span></div>`}
+function evWhen(e){const n=daysBetween(todayISO(),e.date);return n===0?'วันนี้':n===1?'พรุ่งนี้':n<0?thDate(e.date):'อีก '+n+' วัน · '+thDate(e.date,{weekday:'short',day:'numeric',month:'short'})}
+function evRow(e,showP=true){const ty=ETYPE[e.type]||ETYPE.other,p=S.projects.find(x=>x.id===e.projectId),n=daysBetween(todayISO(),e.date);
+  return`<div class="trow ${e.done?'done':''}" data-act="editEvent" data-id="${e.id}" style="cursor:pointer"><span class="evdot" style="--c:${ty.c}">${ic(ty.i,16)}</span>
+  <div class="tmain"><div class="tt">${esc(e.title)}</div><div class="meta"><span class="due ${n<=1&&n>=0&&!e.done?'soon':''}">${evWhen(e)}</span>
+  ${e.time?`<span>${ic('clock',12)}${e.time}${e.timeEnd?'–'+e.timeEnd:''}</span>`:''}${e.place?`<span>📍 ${esc(e.place)}</span>`:''}
+  ${showP&&p?`<span class="pn"><i style="background:${p.color}"></i>${esc(p.name)}</span>`:''}${e.done?`<span style="color:var(--g)">✓ ${e.type==='submit'?'ส่งแล้ว':'เสร็จแล้ว'}</span>`:''}</div></div></div>`}
+const evBtn=()=>`<button class="btn" data-act="newEvent">${ic('calendar',16)}<span>นัดหมาย</span></button>`;
 const managers=()=>[...new Set(S.projects.map(p=>(p.manager||'').trim()).filter(Boolean))];
 
 function taskRow(x,showP=true){
@@ -523,6 +546,7 @@ function vDash(){
   const doneWk=S.tasks.filter(x=>x.status==='done'&&x.completedAt&&x.completedAt>addDays(t,-7)).length;
   const counts=ORDER.map(k=>[k,S.tasks.filter(x=>x.status===k).length]);const tot=S.tasks.length||1;
   const todayPlan=S.tasks.filter(x=>onDay(x,t)).sort((a,b)=>(a.status==='done')-(b.status==='done')||prioRank[a.prio]-prioRank[b.prio]);
+  const upEv=S.events.filter(e=>!e.done&&e.date>=t&&e.date<=addDays(t,14)).sort(evSort);
   const inboxN=open.filter(x=>!x.plan).length,staleN=open.filter(x=>x.plan&&pEnd(x)<t).length;
   const h=new Date().getHours(),greet=h<12?'อรุณสวัสดิ์':h<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น';
   const stat=(i,k,v,c)=>`<div class="card stat ${c}"><div class="ico">${ic(i,18)}</div><div class="v">${v}</div><div class="k">${k}</div></div>`;
@@ -542,6 +566,9 @@ function vDash(){
         <div class="meta"><span><b style="color:var(--ink);font-weight:600">${pr}%</b></span><span>${ts.filter(x=>x.status==='done').length}/${ts.length} งาน</span>${p.end?`<span>${ic('flag',12)}สิ้นสุด ${thDate(p.end)}</span>`:''}</div></div>`}).join('')||'<div class="empty">ยังไม่มีโครงการ — เริ่มจากเมนู “โครงการ”</div>'}
     </div>
     <div class="col">
+      <div class="card"><div class="ch"><h3>นัดหมายที่จะถึง</h3><span class="sp"></span><button class="btn sm ghost" data-act="newEvent">${ic('plus',14)} ลงนัด</button></div>
+        ${upEv.map(e=>evRow(e)).join('')||'<div class="empty">ไม่มีนัดใน 14 วันข้างหน้า</div>'}
+      </div>
       <div class="card"><div class="ch"><h3>แผนวันนี้</h3>${todayPlan.length?`<span class="kn">${todayPlan.filter(x=>x.status==='done').length}/${todayPlan.length}</span>`:''}<span class="sp"></span><button class="btn sm ghost" data-act="nav" data-v="calendar">วางแผน ${ic('next',14)}</button></div>
         ${todayPlan.map(x=>taskRow(x)).join('')||`<div class="empty">ยังไม่ได้วางแผนวันนี้ — มี ${inboxN} งานรออยู่ในกองงาน</div>`}
         ${staleN?`<div class="lbl late" style="cursor:pointer" data-act="nav" data-v="calendar">⚠ เลยวันที่วางแผนไว้ ${staleN} งาน — ไปจัดใหม่</div>`:''}
@@ -557,7 +584,7 @@ function vDash(){
       </div>
     </div>
   </div>`;
-  return{title:`${greet}${S.owner?', '+esc(S.owner):''}`,sub:new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),html,actions:newTaskBtn()};
+  return{title:`${greet}${S.owner?', '+esc(S.owner):''}`,sub:new Date().toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),html,actions:evBtn()+newTaskBtn()};
 }
 
 function vProjects(){
@@ -582,6 +609,7 @@ function vProject(){
   const remain=p.end?daysBetween(t,p.end):null;
   const groups=['doing','review','todo','done'].map(k=>[k,ts.filter(x=>x.status===k).sort(sortTask)]);
   const notes=[...(p.notes||[])].sort((a,b)=>b.date.localeCompare(a.date));
+  const pe=S.events.filter(e=>e.projectId===p.id),pev=pe.filter(e=>e.date>=t&&!e.done).sort(evSort),pevPast=pe.filter(e=>e.date<t||e.done).sort(evSort).reverse().slice(0,5);
   const html=`<div class="card phero" style="--pc:${p.color}">
     <div class="chips">${chip(PSTATUS[p.status]||PSTATUS.active)}${chip(health(p))}</div>
     ${p.desc?`<div class="muted" style="font-size:16px">${esc(p.desc)}</div>`:''}
@@ -599,10 +627,13 @@ function vProject(){
       <form data-form="quick" class="qadd"><input name="title" placeholder="พิมพ์ชื่องานแล้วกด Enter เพื่อเพิ่มเร็ว" autocomplete="off"><button class="btn sm pri">เพิ่ม</button></form>
       ${groups.map(([k,a])=>a.length?`<div class="lbl" style="color:${STATUS[k].c}">${STATUS[k].t} · ${a.length}</div>${a.map(x=>taskRow(x,false)).join('')}`:'').join('')||'<div class="empty">ยังไม่มีงาน</div>'}
     </div>
+    <div class="col"><div class="card"><div class="ch"><h3>นัดหมายของโครงการ</h3><span class="sp"></span><button class="btn sm" data-act="newEvent" data-p="${p.id}">${ic('plus',14)} ลงนัด</button></div>
+      ${pev.length?pev.map(e=>evRow(e,false)).join(''):'<div class="empty">ยังไม่มีนัด — เช่น วันส่งรายงาน วันประชุมกับผู้ว่าจ้าง</div>'}
+      ${pevPast.length?`<div class="lbl">ที่ผ่านมา</div>${pevPast.map(e=>evRow(e,false)).join('')}`:''}</div>
     <div class="card"><div class="ch"><h3>บันทึกประชุม / ความคืบหน้า</h3></div>
       <form data-form="note" class="nform"><input type="date" name="date" value="${t}"><textarea name="text" rows="3" placeholder="สรุปประเด็นประชุม ข้อสั่งการ หรือความคืบหน้า…"></textarea><button class="btn sm grn">${ic('check',14)} บันทึก</button></form>
       ${notes.map(n=>`<div class="note"><div class="nd">${thDate(n.date,{day:'numeric',month:'long',year:'numeric'})}<button class="x" data-act="delNote" data-id="${n.id}" title="ลบ">×</button></div><div class="nt">${esc(n.text)}</div></div>`).join('')||'<div class="empty">ยังไม่มีบันทึก</div>'}
-    </div>
+    </div></div>
   </div>`;
   return{title:`<button class="btn ghost back" data-act="back" title="กลับ">${ic('back',18)}</button><span>${esc(p.name)}</span>`,html,
     actions:`<button class="btn" data-act="editProject" data-id="${p.id}">${ic('edit',15)}<span>แก้ไข</span></button>`};
@@ -674,7 +705,8 @@ function weekView(){
     return`<div class="day ${iso===t?'today':''} ${wd===0||wd===6?'wkend':''}" data-drop="plan:${iso}">
       <div class="dh"><b>${d.getDate()}</b><small>${d.toLocaleDateString('th-TH',{weekday:'short'})}<br>${iso===t?'วันนี้':d.toLocaleDateString('th-TH',{month:'short'})}</small>
         ${pl.length?`<span class="kn" style="margin-left:4px;${nd===pl.length?'background:var(--gs);color:var(--g)':''}">${nd}/${pl.length}</span>`:''}
-        <button class="btn sm ghost dadd" data-act="newTask" data-plan="${iso}" title="เพิ่มงานวันนี้">${ic('plus',14)}</button></div>
+        <button class="btn sm ghost dadd" data-act="addOnDay" data-d="${iso}" title="เพิ่มงานหรือนัดหมาย">${ic('plus',14)}</button></div>
+      ${evOn(iso).map(evChip).join('')}
       ${pe.map(p=>`<div class="dl pe" style="--c:${p.color}" data-act="openProject" data-id="${p.id}" title="สิ้นสุดโครงการ">${ic('flag',12)}<span>สิ้นสุด: ${esc(p.name)}</span></div>`).join('')}
       ${dl.map(x=>`<div class="dl" data-act="editTask" data-id="${x.id}" title="กำหนดส่ง">${ic('clock',12)}<span>ส่ง: ${esc(x.title)}</span></div>`).join('')}
       ${pl.map(x=>planCard(x,iso)).join('')}
@@ -687,13 +719,14 @@ function monthView(){
   for(let i=0;i<total;i++){
     const d=new Date(y,mo,1-off+i),iso=fmtISO(d),inM=d.getMonth()===mo;
     const pl=S.tasks.filter(x=>onDay(x,iso)).sort(sortTask),dd=S.tasks.filter(x=>x.due===iso&&x.status!=='done'),pe=S.projects.filter(p=>p.end===iso);
-    cells.push(`<div class="cd ${inM?'':'out'} ${iso===t?'today':''}" data-drop="plan:${iso}" data-act="newTask" data-plan="${iso}" title="เพิ่มงานวันนี้"><div class="cdn">${d.getDate()}</div>
+    cells.push(`<div class="cd ${inM?'':'out'} ${iso===t?'today':''}" data-drop="plan:${iso}" data-act="addOnDay" data-d="${iso}" title="เพิ่มงานหรือนัดหมาย"><div class="cdn">${d.getDate()}</div>
       ${pe.map(p=>`<div class="cev pe" style="--c:${p.color}" data-act="openProject" data-id="${p.id}" title="สิ้นสุดโครงการ: ${esc(p.name)}">${ic('flag',11)}<span>${esc(p.name)}</span></div>`).join('')}
+      ${evOn(iso).map(e=>`<div class="cev" style="--c:${(ETYPE[e.type]||ETYPE.other).c};font-weight:500;${e.done?'opacity:.5':''}" data-drag="ev:${e.id}" data-act="editEvent" data-id="${e.id}" title="${(ETYPE[e.type]||ETYPE.other).t}: ${esc(e.title)}">${ic((ETYPE[e.type]||ETYPE.other).i,11)}<span>${e.time?e.time+' ':''}${esc(e.title)}</span></div>`).join('')}
       ${pl.map(x=>`<div class="cev pl ${x.status==='done'?'dn':''}" style="--c:${projOf(x)?.color||'#a78bfa'}" data-drag="${x.id}" data-act="editTask" data-id="${x.id}" title="ทำ: ${esc(x.title)}"><span>${esc(x.title)}</span></div>`).join('')}
       ${dd.map(x=>`<div class="cev dd" style="--c:${projOf(x)?.color||'#e5486f'}" data-act="editTask" data-id="${x.id}" title="ส่ง: ${esc(x.title)}">${ic('clock',11)}<span>${esc(x.title)}</span></div>`).join('')}</div>`);
   }
   return`<div class="card" style="padding:12px"><div class="cgrid">${['อา','จ','อ','พ','พฤ','ศ','ส'].map(x=>`<div class="cw">${x}</div>`).join('')}${cells.join('')}</div>
-  <div class="legend" style="margin-top:10px"><span><b style="background:var(--p)"></b>วันที่จะทำ</span><span><b style="background:#fff;border:1px dashed var(--red)"></b>กำหนดส่ง</span><span><b style="background:var(--pk)"></b>สิ้นสุดโครงการ</span></div></div>`;
+  <div class="legend" style="margin-top:10px"><span><b style="background:var(--p)"></b>วันที่จะทำ</span><span><b style="background:#fff;border:1px dashed var(--red)"></b>กำหนดส่ง</span><span><b style="background:var(--pk)"></b>สิ้นสุดโครงการ</span><span><b style="background:#eef0ff;border:1px solid #6366f1"></b>นัดหมาย</span></div></div>`;
 }
 function vCal(){
   const wk=ui.calMode==='week';
@@ -703,7 +736,7 @@ function vCal(){
       <button class="btn sm" data-act="cal" data-d="0">วันนี้</button><span class="sp"></span>
       <div class="seg"><button class="${wk?'on':''}" data-act="calMode" data-m="week">7 วัน</button><button class="${wk?'':'on'}" data-act="calMode" data-m="month">เดือน</button></div></div>
     ${wk?weekView():monthView()}</div></div>`;
-  return{title:'วางแผนงาน',sub:'โยนงานลงกอง แล้วลากไปวางในวันที่จะทำ',html,actions:newTaskBtn()};
+  return{title:'วางแผนงาน',sub:'โยนงานลงกอง แล้วลากไปวางในวันที่จะทำ · นัดหมายลงด้วยปุ่ม “นัดหมาย”',html,actions:evBtn()+newTaskBtn()};
 }
 function pickDay(t,dur){
   const td=todayISO();dur=dur||pDays(t);ui.pickDur=dur;
@@ -730,10 +763,11 @@ function vTimeline(){
     return`<div class="tl-row"><div class="tl-name" data-act="openProject" data-id="${p.id}"><i style="background:${p.color}"></i><span title="${esc(p.name)}">${esc(p.name)}</span></div>
     <div class="tl-track">${grid}<div class="tl-today ${i===0?'lab':''}" style="left:${tp}%"></div>
       <div class="tl-bar" style="left:${l}%;width:${w}%;--c:${p.color}" data-act="openProject" data-id="${p.id}" title="${thDate(p.start)} – ${thDate(p.end)}"><i style="width:${pr}%"></i><span class="${pr<20?'lo':''}">${pr}%</span></div>
+      ${S.events.filter(e=>e.projectId===p.id&&e.date>=S0).map(e=>`<div class="tl-ms" style="left:${pos(e.date)}%;--c:${(ETYPE[e.type]||ETYPE.other).c};border-radius:50%;transform:translateX(-50%)" data-act="editEvent" data-id="${e.id}" title="${(ETYPE[e.type]||ETYPE.other).t}: ${esc(e.title)} (${thDate(e.date)})"></div>`).join('')}
       ${ms.map(x=>`<div class="tl-ms" style="left:${pos(x.due)}%;--c:${p.color}" data-act="editTask" data-id="${x.id}" title="งานด่วน: ${esc(x.title)} (${thDate(x.due)})"></div>`).join('')}
     </div></div>`}).join('');
   const html=`<div class="card tl"><div class="tl-in"><div class="tl-head"><div class="tl-name" style="cursor:default;color:var(--muted)">โครงการ</div><div class="tl-months">${months.map(m=>`<div class="tl-m" style="left:${m.x}%;width:${m.w}%">${m.l}</div>`).join('')}</div></div>${rows}</div>
-  <div class="legend" style="margin-top:12px"><span><b style="background:var(--pk);width:3px"></b>วันนี้</span><span>◇ งานด่วนที่ยังไม่เสร็จ</span><span>แถบเข้ม = ความคืบหน้า</span></div></div>`;
+  <div class="legend" style="margin-top:12px"><span><b style="background:var(--pk);width:3px"></b>วันนี้</span><span>◇ งานด่วนที่ยังไม่เสร็จ</span><span>● นัดหมาย / วันส่งงาน</span><span>แถบเข้ม = ความคืบหน้า</span></div></div>`;
   return{title:'ไทม์ไลน์',sub:'ภาพรวมระยะเวลาโครงการทั้งหมด',html};
 }
 
@@ -780,8 +814,10 @@ function buildReport(){
     sect('▸ อยู่ระหว่างดำเนินการ',doing,x=>x.status==='review'?' (รอตรวจ)':'');
     sect('! เกินกำหนด',od,x=>` (กำหนด ${thDate(x.due)})`);
     sect('→ แผนงาน 7 วันข้างหน้า',up,x=>` (${thDate(x.due)})`);
+    const evs=S.events.filter(e=>e.projectId===id&&!e.done&&e.date>=t&&e.date<=addDays(t,14)).sort(evSort);
+    if(evs.length){o+='  📅 นัดหมายถัดไป\n';evs.forEach(e=>o+=`    – ${thDate(e.date,{day:'numeric',month:'short'})}${e.time?' '+e.time+' น.':''}: ${e.title}${e.place?' ('+e.place+')':''}\n`)}
     if(nts.length){o+='  📝 ประเด็นสำคัญ\n';nts.forEach(n=>o+=`    – ${thDate(n.date,{day:'numeric',month:'short'})}: ${n.text.replace(/\n+/g,' ')}\n`)}
-    if(!done.length&&!doing.length&&!od.length&&!up.length&&!nts.length)o+='  – ไม่มีความเคลื่อนไหวในช่วงนี้\n';
+    if(!done.length&&!doing.length&&!od.length&&!up.length&&!nts.length&&!evs.length)o+='  – ไม่มีความเคลื่อนไหวในช่วงนี้\n';
   });
   return o;
 }
@@ -890,6 +926,22 @@ function projectForm(p){
     onDelete:p?()=>{S.projects=S.projects.filter(y=>y.id!==p.id);S.tasks=S.tasks.filter(t=>t.projectId!==p.id);ui.view='projects';save();render();toast('ลบโครงการแล้ว')}:null,
     delText:'ลบโครงการและงานทั้งหมด'});
 }
+function eventForm(e,def={}){
+  const x=e||Object.assign({id:uid(),title:'',type:'meeting',date:todayISO(),time:'',timeEnd:'',place:'',projectId:'',notes:'',done:false},def);
+  const body=`<label>ชื่อนัด<input name="title" required value="${esc(x.title)}" placeholder="เช่น ส่งรายงาน PG2, ประชุมความก้าวหน้า"></label>
+  <div class="pchips etype">${Object.entries(ETYPE).map(([k,v])=>`<label class="pchip ${x.type===k?'on':''}" style="--c:${v.c}"><input type="radio" name="type" value="${k}" ${x.type===k?'checked':''} hidden>${ic(v.i,14)} ${v.t}</label>`).join('')}</div>
+  <div class="frow"><label>วันที่<input type="date" name="date" required value="${x.date||''}"></label><label>เวลา<input type="time" name="time" value="${x.time||''}"></label><label>ถึงเวลา<input type="time" name="timeEnd" value="${x.timeEnd||''}"></label></div>
+  <div class="frow"><label>โครงการ<select name="projectId"><option value="">— ไม่ระบุ —</option>${opts(S.projects,x.projectId)}</select></label>
+  <label>สถานที่ / ลิงก์ประชุม<input name="place" value="${esc(x.place)}" placeholder="ห้องประชุม, Zoom, ส่งทางอีเมล…"></label></div>
+  <label>หมายเหตุ<textarea name="notes" rows="2" placeholder="วาระ เอกสารที่ต้องเตรียม จำนวนเล่ม ฯลฯ">${esc(x.notes)}</textarea></label>
+  ${e?`<label style="display:flex;align-items:center;gap:8px;color:var(--ink);font-size:15px"><input type="checkbox" name="done" ${x.done?'checked':''} style="width:18px;height:18px;accent-color:var(--g)"> ${x.type==='submit'?'ส่งแล้ว':'เสร็จแล้ว'}</label>`:''}`;
+  modal(e?'แก้ไขนัดหมาย':'นัดหมายใหม่',body,{
+    onSave:fd=>{fd.title=fd.title.trim();if(!fd.title||!fd.date)return false;fd.done=!!fd.done;
+      if(fd.timeEnd&&fd.time&&fd.timeEnd<fd.time){toast('เวลาสิ้นสุดต้องหลังเวลาเริ่ม');return false}
+      if(e)Object.assign(e,fd);else S.events.push(Object.assign(x,fd));save();render();toast(e?'อัปเดตนัดหมายแล้ว':'📅 ลงนัด '+evWhen(x)+' แล้ว')},
+    onDelete:e?()=>{S.events=S.events.filter(y=>y.id!==e.id);save();render();toast('ลบนัดหมายแล้ว')}:null});
+  document.querySelectorAll('#mform .etype input').forEach(r=>r.addEventListener('change',()=>document.querySelectorAll('#mform .etype label').forEach(l=>l.classList.toggle('on',l.querySelector('input').checked))));
+}
 function memberForm(m){
   const x=m||{name:'',role:''};
   modal(m?'แก้ไขสมาชิก':'เพิ่มสมาชิก',`<label>ชื่อ<input name="name" required value="${esc(x.name)}"></label><label>ตำแหน่ง / บทบาท<input name="role" value="${esc(x.role)}" placeholder="เช่น วิศวกรแหล่งน้ำ, GIS"></label>`,{
@@ -918,6 +970,11 @@ const ACT={
   delNote:(el,id)=>{const p=S.projects.find(x=>x.id===ui.proj);if(p&&confirm('ลบบันทึกนี้?')){p.notes=p.notes.filter(n=>n.id!==id);save();render()}},
   cal:el=>{const d=+el.dataset.d;if(d===0){ui.cal=new Date();ui.wk=todayISO()}else if(ui.calMode==='week')ui.wk=addDays(ui.wk,7*d);else ui.cal=new Date(ui.cal.getFullYear(),ui.cal.getMonth()+d,1);render()},
   ibAll:()=>{ui.ibAll=true;render()},
+  newEvent:el=>eventForm(null,{date:el.dataset.d||todayISO(),projectId:el.dataset.p||(ui.view==='project'?ui.proj:'')}),
+  editEvent:(el,id)=>{const e=S.events.find(x=>x.id===id);e&&eventForm(e)},
+  addOnDay:el=>{const d=el.dataset.d;modal('เพิ่มในวัน'+new Date(d+'T00:00:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'}),
+    `<div class="daypick chooser"><button type="button" class="btn" data-act="newTask" data-plan="${d}">${ic('check',18)}<b>งานที่จะทำวันนี้</b><small>สิ่งที่ต้องลงมือทำ ติ๊กเสร็จได้</small></button>
+    <button type="button" class="btn" data-act="newEvent" data-d="${d}">${ic('calendar',18)}<b>นัดหมาย</b><small>ประชุม · นัดส่งงาน/รายงาน · นัดอื่นๆ</small></button></div>`,{foot:false})},
   calMode:el=>{ui.calMode=el.dataset.m;render()},
   pickDay:(el,id)=>{const t=S.tasks.find(x=>x.id===id);t&&pickDay(t)},
   pickDur:el=>{ui.pickDur=+el.dataset.n;el.parentElement.querySelectorAll('.pchip').forEach(c=>c.classList.toggle('on',c===el))},
@@ -992,6 +1049,8 @@ function endDrag(apply){
   clearInterval(d.timer);d.g.remove();d.src.classList.remove('dragging');document.body.classList.remove('is-dragging');d.over&&d.over.classList.remove('over');
   suppressClick=true;setTimeout(()=>suppressClick=false,60);
   if(!apply||!d.over)return;
+  if(d.id.startsWith('ev:')){const e=S.events.find(x=>x.id===d.id.slice(3)),[k,v]=d.over.dataset.drop.split(':');
+    if(e&&k==='plan'&&v&&e.date!==v){e.date=v;save();render();toast('📅 ย้ายนัดไป '+evWhen(e))}return}
   const t=S.tasks.find(x=>x.id===d.id);if(!t)return;const [k,v]=d.over.dataset.drop.split(':');
   if(k==='plan'){if((t.plan||'')===v)return;setPlanRange(t,v,v?pDays(t):1);toast(v?'📌 '+planLabelT(t):'กลับเข้ากองงานแล้ว')}
   if(k==='assign'){if((t.assignee||'')===v)return;t.assignee=v;const mm=S.members.find(m=>m.id===v);toast(mm?'มอบหมายให้ '+mm.name:'ย้ายไป “ยังไม่มีคนรับ”')}
