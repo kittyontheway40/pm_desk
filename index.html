@@ -322,6 +322,20 @@ select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
 @media (max-width:1800px){.week{grid-template-columns:repeat(4,minmax(0,1fr))}.day{min-height:240px}}
 @media (max-width:1100px){.plan-wrap{grid-template-columns:1fr}.inbox{position:static;max-height:none}}
 
+/* people */
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:-4px}
+.pchip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:3px 12px;font-size:14px;color:var(--ink)}
+.pchip:hover,.pchip.on{background:var(--ps);border-color:var(--p2);color:#6d3fe0}
+.team-board{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(270px,1fr);overflow-x:auto;padding-bottom:8px}
+.tcol .mhd{margin-bottom:10px}
+.tcol .mav{width:40px;height:40px;font-size:17px;flex-shrink:0}
+.tcol.none .mav{background:#ece6f7;color:var(--muted)}
+.tcol .mstats div{background:#fff;padding:8px 4px}
+.tcol .mstats small{font-size:12.5px;white-space:nowrap}
+.tcol .addp{width:100%;justify-content:center;margin-top:8px;border-style:dashed;color:var(--muted)}
+.wload{display:flex;gap:3px;margin:0 0 10px}
+.wload span{flex:1;text-align:center;font-size:11.5px;color:var(--muted)}
+.wload b{display:block;height:22px;border-radius:6px;background:#efeaf8;margin-bottom:2px;font-size:12px;line-height:22px;color:#fff;font-weight:600}
 /* mobile */
 @media (max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.two,.rgrid{grid-template-columns:1fr}.kv{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:820px){
@@ -339,6 +353,7 @@ select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
   .fab{display:grid;place-items:center;position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:18px;border:0;background:linear-gradient(135deg,#8b5cf6,#d946ef);color:#fff;box-shadow:0 12px 24px -8px rgba(168,85,247,.7);z-index:41}
   .kanban{grid-template-columns:repeat(4,82vw);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px;margin:0 -14px;padding-left:14px;padding-right:14px}
   .kcol{scroll-snap-align:center}
+  .team-board{grid-template-columns:none;grid-auto-columns:82vw}
   .toolbar select{flex:1;min-width:0}
   .week{grid-template-columns:1fr}.day{min-height:auto}.dz{min-height:40px}
   .calbar h3{min-width:0;flex:1;font-size:16px}
@@ -439,7 +454,7 @@ function save(fromCloud){if(!fromCloud){S.updatedAt=Date.now();S.pristine=false;
 function replaceState(d){Object.keys(S).forEach(k=>delete S[k]);Object.assign(S,{members:[],projects:[],tasks:[]},d);S.projects.forEach(p=>p.notes=p.notes||[])}
 
 const S=(()=>{const d=load();const m=d?migrate(d):cleanState();if(m!==d){try{localStorage.setItem(KEY,JSON.stringify(m))}catch(e){}}return m})();
-const ui={calMode:'week',wk:todayISO(),ibp:'',dumpP:'',view:'dash',proj:null,fp:'',fa:'',q:'',pf:'open',cal:new Date(),repDays:'7',repSel:null,repMgr:''};
+const ui={tp:'',calMode:'week',wk:todayISO(),ibp:'',dumpP:'',view:'dash',proj:null,fp:'',fa:'',q:'',pf:'open',cal:new Date(),repDays:'7',repSel:null,repMgr:''};
 
 /* ================== helpers ================== */
 const projOf=t=>S.projects.find(p=>p.id===t.projectId);
@@ -469,6 +484,11 @@ const planLabel=iso=>{const n=daysBetween(todayISO(),iso);return n===0?'ทำ�
 const chip=(o)=>`<span class="chip" style="--c:${o.c}">${o.t}</span>`;
 const opts=(list,sel,label='name')=>list.map(o=>`<option value="${esc(o.id)}" ${o.id===sel?'selected':''}>${esc(o[label])}</option>`).join('');
 const newTaskBtn=()=>`<button class="btn pri hide-m" data-act="newTask">${ic('plus',16)}<span>งานใหม่</span></button>`;
+function memberIdByName(name,quiet){
+  name=(name||'').trim().replace(/^@/,'');if(!name)return '';
+  const m=S.members.find(x=>x.name.toLowerCase()===name.toLowerCase());if(m)return m.id;
+  const n={id:uid(),name,role:''};S.members.push(n);if(!quiet)toast('เพิ่ม “'+name+'” เข้าทีมแล้ว');return n.id;
+}
 const managers=()=>[...new Set(S.projects.map(p=>(p.manager||'').trim()).filter(Boolean))];
 
 function taskRow(x,showP=true){
@@ -627,7 +647,7 @@ function inboxPanel(){
   return`<div class="card inbox" data-drop="plan:">
     <div class="ch"><span style="color:var(--p)">${ic('inbox',19)}</span><h3>กองงาน</h3><span class="kn" style="background:var(--ps)">${inbox.length}</span><span class="sp"></span>
       <select class="mini" data-f="ibp" title="กรองกองงาน"><option value="">ทุกโครงการ</option>${opts(S.projects,ui.ibp)}</select></div>
-    <form data-form="dump" class="dump"><textarea name="t" placeholder="พิมพ์งานที่นึกได้ แล้วกด Enter&#10;(วางหลายบรรทัดได้ทีเดียว)"></textarea>
+    <form data-form="dump" class="dump"><textarea name="t" placeholder="พิมพ์งานที่นึกได้ แล้วกด Enter&#10;ใส่ @ชื่อ เพื่อมอบหมาย เช่น ส่ง PG2 @ริ"></textarea>
       <div class="drow"><select name="p"><option value="">ไม่ระบุโครงการ</option>${opts(S.projects,ui.dumpP)}</select><button class="btn sm pri">${ic('plus',14)} โยนลงกอง</button></div></form>
     ${stale.length?`<div class="stale"><div class="ch" style="margin-bottom:8px"><b style="font-size:14.5px;color:#b45309;display:flex;gap:4px;align-items:center">${ic('alert',14)} เลยวันที่วางแผน ${stale.length} งาน</b><span class="sp"></span><button class="btn sm" data-act="rollToday">ย้ายมาวันนี้ทั้งหมด</button></div>${stale.map(x=>icard(x,true)).join('')}</div>`:''}
     <div>${inbox.slice(0,lim).map(x=>icard(x)).join('')||'<div class="empty">กองว่างแล้ว ✨ ทุกงานมีวันที่จะทำแล้ว</div>'}</div>
@@ -706,18 +726,29 @@ function vTimeline(){
 }
 
 function vTeam(){
-  const open=S.tasks.filter(t=>t.status!=='done');const mx=Math.max(1,...S.members.map(m=>open.filter(t=>t.assignee===m.id).length));
-  const html=`<div class="grid tgrid">${S.members.map(m=>{const mine=open.filter(t=>t.assignee===m.id).sort(sortTask);const od=mine.filter(isOverdue).length,doing=mine.filter(t=>t.status==='doing'||t.status==='review').length;
-    return`<div class="card"><div class="mhd"><div class="mav">${esc(firstChar(m.name))}</div><div style="flex:1;min-width:0"><b>${esc(m.name)}</b><small>${esc(m.role)||'–'}</small></div><button class="btn sm ghost" data-act="editMember" data-id="${esc(m.id)}">${ic('edit',14)}</button></div>
-    <div class="mstats"><div><b>${mine.length}</b><small>งานค้าง</small></div><div><b>${doing}</b><small>กำลังทำ</small></div><div class="${od?'r':''}"><b>${od}</b><small>เกินกำหนด</small></div></div>
-    <div class="load" title="ภาระงานเทียบกับคนที่งานมากที่สุด"><i style="width:${mine.length/mx*100}%"></i></div>
-    ${mine.slice(0,5).map(x=>taskRow(x)).join('')||'<div class="empty">ไม่มีงานค้าง 🎉</div>'}
-    ${mine.length>5?`<button class="btn sm ghost" data-act="boardFor" data-id="${esc(m.id)}">ดูอีก ${mine.length-5} งาน ${ic('next',13)}</button>`:''}
-    </div>`}).join('')}</div>
-    ${open.some(t=>!t.assignee)?`<div class="card" style="margin-top:16px"><h3>งานที่ยังไม่มีผู้รับผิดชอบ</h3>${open.filter(t=>!t.assignee).map(x=>taskRow(x)).join('')}</div>`:''}`;
-  return{title:'ทีม',sub:'ภาระงานของแต่ละคน',html,actions:`<button class="btn pri" data-act="newMember">${ic('plus',16)}<span>เพิ่มสมาชิก</span></button>`};
+  const t=todayISO(),wkEnd=addDays(t,6),days=[...Array(7)].map((_,i)=>addDays(t,i));
+  const open=S.tasks.filter(x=>x.status!=='done'&&(!ui.tp||x.projectId===ui.tp));
+  const cols=[{id:'',name:'ยังไม่มีคนรับ',role:'ลากงานไปวางที่ชื่อคนเพื่อมอบหมาย'},...S.members];
+  const mx=Math.max(1,...S.members.map(m=>open.filter(x=>x.assignee===m.id).length));
+  const dayLoad=(id,d)=>open.filter(x=>x.assignee===id&&(x.plan?x.plan===d:x.due===d)).length;
+  const html=`<div class="toolbar"><select data-f="tp"><option value="">ทุกโครงการ</option>${opts(S.projects,ui.tp)}</select>
+    <div class="muted" style="font-size:14px;align-self:center">ลากการ์ด (หรือจับ ⠿ บนมือถือ) ไปวางในคอลัมน์ของคนที่จะให้ทำ</div></div>
+  <div class="kanban team-board">${cols.map(m=>{
+    const mine=open.filter(x=>(x.assignee||'')===m.id).sort(sortTask);if(!m.id&&!mine.length&&S.members.length>1)return'';
+    const od=mine.filter(isOverdue).length,wk=mine.filter(x=>(x.plan&&x.plan<=wkEnd)||(x.due&&x.due<=wkEnd)).length;
+    return`<div class="kcol tcol ${m.id?'':'none'}" data-drop="assign:${esc(m.id)}">
+      <div class="mhd"><div class="mav">${m.id?esc(firstChar(m.name)):ic('inbox',18)}</div><div style="flex:1;min-width:0"><b>${esc(m.name)}</b><small>${esc(m.role)||(m.id?'แตะ ✎ เพื่อใส่ตำแหน่ง':'')}</small></div>
+        ${m.id?`<button class="btn sm ghost" data-act="editMember" data-id="${esc(m.id)}" title="แก้ไข">${ic('edit',14)}</button>`:''}</div>
+      ${m.id?`<div class="mstats"><div><b>${mine.length}</b><small>งานค้าง</small></div><div><b>${wk}</b><small>7 วันนี้</small></div><div class="${od?'r':''}"><b>${od}</b><small>เกินกำหนด</small></div></div>
+      <div class="wload" title="จำนวนงานต่อวัน (ตามวันที่จะทำ หรือวันส่งถ้ายังไม่ได้วางแผน)">${days.map(d=>{const n=dayLoad(m.id,d);return`<span><b style="${n?`background:${n>=3?'#ec4899':n==2?'#a78bfa':'#6ee7b7'}`:''}">${n||''}</b>${new Date(d+'T00:00:00').toLocaleDateString('th-TH',{weekday:'narrow'})}</span>`}).join('')}</div>
+      <div class="load" title="ภาระงานเทียบกับคนที่งานมากที่สุด"><i style="width:${mine.length/mx*100}%"></i></div>`:''}
+      <div class="klist">${mine.map(kcard).join('')||'<div class="kempty">ลากงานมาวางที่นี่</div>'}</div>
+      <button class="btn sm addp" data-act="newTask" data-a="${esc(m.id)}">${ic('plus',14)} เพิ่มงาน${m.id?'ให้ '+esc(m.name):''}</button>
+    </div>`}).join('')}
+    <div class="kcol tcol" style="display:grid;place-items:center;min-height:200px;background:transparent;border-style:dashed"><button class="btn" data-act="newMember">${ic('plus',16)} เพิ่มคนในทีม</button></div>
+  </div>`;
+  return{title:'ทีม',sub:'มอบหมายงานและดูภาระงานของแต่ละคน',html,actions:`<button class="btn pri" data-act="newMember">${ic('plus',16)}<span>เพิ่มสมาชิก</span></button>`};
 }
-
 function buildReport(){
   const t=todayISO(),days=+ui.repDays,from=addDays(t,-days+1),next=addDays(t,7);
   const ids=ui.repSel||S.projects.filter(p=>p.status!=='done').map(p=>p.id);
@@ -811,7 +842,10 @@ function taskForm(t,def={}){
   const x=t||newTaskObj(def);
   const body=`<label>ชื่องาน<input name="title" required value="${esc(x.title)}" placeholder="เช่น ร่างรายงานฉบับกลาง"></label>
   <div class="frow"><label>โครงการ<select name="projectId"><option value="">— ไม่ระบุ —</option>${opts(S.projects,x.projectId)}</select></label>
-  <label>ผู้รับผิดชอบ<select name="assignee"><option value="">— ไม่ระบุ —</option>${opts(S.members,x.assignee)}</select></label></div>
+  </div>
+  <label>ผู้รับผิดชอบ<input name="assigneeName" list="memList" value="${esc(S.members.find(m=>m.id===x.assignee)?.name||'')}" placeholder="พิมพ์ชื่อ (คนใหม่จะถูกเพิ่มเข้าทีมให้) หรือแตะเลือกด้านล่าง" autocomplete="off">
+  <datalist id="memList">${S.members.map(m=>`<option value="${esc(m.name)}">`).join('')}</datalist></label>
+  <div class="pchips">${S.members.map(m=>`<button type="button" class="pchip" data-pick="${esc(m.name)}">${esc(m.name)}</button>`).join('')}<button type="button" class="pchip" data-pick="">ไม่ระบุ</button></div>
   <div class="frow"><label>สถานะ<select name="status">${ORDER.map(k=>`<option value="${k}" ${x.status===k?'selected':''}>${STATUS[k].t}</option>`).join('')}</select></label>
   <label>ความสำคัญ<select name="prio">${Object.entries(PRIO).map(([k,v])=>`<option value="${k}" ${x.prio===k?'selected':''}>${v.t}</option>`).join('')}</select></label>
   </div>
@@ -819,10 +853,13 @@ function taskForm(t,def={}){
   <label>รายละเอียด / หมายเหตุ<textarea name="notes" rows="3" placeholder="ลิงก์ไฟล์ ข้อสั่งการ เงื่อนไข ฯลฯ">${esc(x.notes)}</textarea></label>
   ${t&&t.completedAt?`<div class="muted" style="font-size:14px">เสร็จเมื่อ ${thDate(t.completedAt,{day:'numeric',month:'long',year:'numeric'})}</div>`:''}`;
   modal(t?'แก้ไขงาน':'งานใหม่',body,{
-    onSave:fd=>{fd.title=fd.title.trim();if(!fd.title)return false;const st=fd.status;delete fd.status;
+    onSave:fd=>{fd.title=fd.title.trim();if(!fd.title)return false;const st=fd.status;delete fd.status;fd.assignee=memberIdByName(fd.assigneeName);delete fd.assigneeName;
       if(t){Object.assign(t,fd);setStatus(t,st)}else{const n=Object.assign(x,fd);n.status='';setStatus(n,st);S.tasks.push(n)}
       save();render();toast(t?'อัปเดตงานแล้ว':'เพิ่มงานแล้ว')},
     onDelete:t?()=>{S.tasks=S.tasks.filter(y=>y.id!==t.id);save();render();toast('ลบงานแล้ว')}:null});
+  const inp=$('#mform [name=assigneeName]'),chips=[...document.querySelectorAll('#mform [data-pick]')];
+  const mark=()=>chips.forEach(c=>c.classList.toggle('on',c.dataset.pick===inp.value.trim()));
+  chips.forEach(c=>c.onclick=()=>{inp.value=c.dataset.pick;mark()});inp.addEventListener('input',mark);mark();
 }
 function projectForm(p){
   const x=p||{name:'',client:'',manager:'',status:'active',start:todayISO(),end:addDays(todayISO(),90),color:COLORS[S.projects.length%COLORS.length],desc:''};
@@ -843,7 +880,7 @@ function projectForm(p){
 }
 function memberForm(m){
   const x=m||{name:'',role:''};
-  modal(m?'แก้ไขสมาชิก':'เพิ่มสมาชิก',`<label>ชื่อ<input name="name" required value="${esc(x.name)}"></label><label>ตำแหน่ง / บทบาท<input name="role" value="${esc(x.role)}"></label>`,{
+  modal(m?'แก้ไขสมาชิก':'เพิ่มสมาชิก',`<label>ชื่อ<input name="name" required value="${esc(x.name)}"></label><label>ตำแหน่ง / บทบาท<input name="role" value="${esc(x.role)}" placeholder="เช่น วิศวกรแหล่งน้ำ, GIS"></label>`,{
     onSave:fd=>{fd.name=fd.name.trim();if(!fd.name)return false;if(m)Object.assign(m,fd);else S.members.push({id:uid(),...fd});save();render()},
     onDelete:m&&m.id!=='me'?()=>{S.members=S.members.filter(y=>y.id!==m.id);S.tasks.forEach(t=>{if(t.assignee===m.id)t.assignee=''});save();render()}:null});
 }
@@ -857,7 +894,7 @@ function copyText(s){
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200)}
 const ACT={
   nav:el=>{ui.view=el.dataset.v;render();window.scrollTo(0,0)},
-  newTask:el=>taskForm(null,{projectId:el.dataset.p||(ui.view==='project'?ui.proj:'')||(ui.view==='board'?ui.fp:''),due:el.dataset.due||'',plan:el.dataset.plan||'',status:el.dataset.s||'todo'}),
+  newTask:el=>{const d={projectId:el.dataset.p||(ui.view==='project'?ui.proj:'')||(ui.view==='board'?ui.fp:'')||(ui.view==='team'?ui.tp:''),due:el.dataset.due||'',plan:el.dataset.plan||'',status:el.dataset.s||'todo'};if(el.dataset.a!==undefined)d.assignee=el.dataset.a;else if(ui.view==='board'&&ui.fa)d.assignee=ui.fa;taskForm(null,d)},
   editTask:(el,id)=>{const t=S.tasks.find(x=>x.id===id);t&&taskForm(t)},
   toggle:(el,id)=>{const t=S.tasks.find(x=>x.id===id);if(!t)return;setStatus(t,t.status==='done'?'todo':'done');save();render();if(t.status==='done')toast('เสร็จแล้ว 🎉')},
   adv:(el,id)=>{const t=S.tasks.find(x=>x.id===id);if(!t)return;setStatus(t,ORDER[Math.min(3,ORDER.indexOf(t.status)+1)]);save();render();toast('ย้ายไป “'+STATUS[t.status].t+'”')},
@@ -887,7 +924,7 @@ const ACT={
 };
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=ACT[el.dataset.act];if(f){e.stopPropagation();f(el,el.dataset.id)}});
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;ui[f]=e.target.value;
-  if(ui.view==='board')renderBoardCols();if(ui.view==='calendar'&&f==='ibp')render();if(ui.view==='report'&&$('#repText'))$('#repText').value=buildReport()});
+  if(ui.view==='board')renderBoardCols();if(ui.view==='calendar'&&f==='ibp')render();if(ui.view==='team'&&f==='tp')render();if(ui.view==='report'&&$('#repText'))$('#repText').value=buildReport()});
 document.addEventListener('change',e=>{
   if(e.target.id==='repMgr'){ui.repMgr=e.target.value;ui.repSel=ui.repMgr?S.projects.filter(p=>(p.manager||'').trim()===ui.repMgr&&p.status!=='done').map(p=>p.id):null;render()}
   if(e.target.classList.contains('repChk')){ui.repSel=[...document.querySelectorAll('.repChk:checked')].map(c=>c.value);$('#repText').value=buildReport()}
@@ -896,7 +933,7 @@ document.addEventListener('submit',e=>{const f=e.target.dataset.form;if(!f)retur
   if(f==='quick'){const title=(fd.title||'').trim();if(!title)return;S.tasks.push(newTaskObj({title,projectId:ui.proj}));save();render();setTimeout(()=>$('[data-form=quick] input')?.focus(),0)}
   if(f==='note'){const text=(fd.text||'').trim();if(!text)return;const p=S.projects.find(x=>x.id===ui.proj);p.notes=p.notes||[];p.notes.push({id:uid(),date:fd.date||todayISO(),text});save();render();toast('บันทึกแล้ว')}
   if(f==='dump'){const lines=(fd.t||'').split(/\n+/).map(x=>x.replace(/^\s*[-•*\d.)]+\s*/,'').trim()).filter(Boolean);if(!lines.length)return;
-    ui.dumpP=fd.p||'';lines.forEach(title=>S.tasks.push(newTaskObj({title,projectId:ui.dumpP,assignee:'me'})));save();render();toast(lines.length>1?`โยนลงกอง ${lines.length} งาน`:'โยนลงกองแล้ว');
+    ui.dumpP=fd.p||'';lines.forEach(line=>{let a='me';const title=line.replace(/(^|\s)@(\S+)/g,(m0,sp,nm)=>{a=memberIdByName(nm,true);return ''}).replace(/\s+/g,' ').trim()||line;S.tasks.push(newTaskObj({title,projectId:ui.dumpP,assignee:a}))});save();render();toast(lines.length>1?`โยนลงกอง ${lines.length} งาน`:'โยนลงกองแล้ว');
     setTimeout(()=>{const ta=$('[data-form=dump] textarea');if(ta&&window.innerWidth>820)ta.focus()},0)}
   if(f==='owner'){S.owner=(fd.owner||'').trim();save();render();toast('บันทึกแล้ว')}
 });
@@ -944,6 +981,7 @@ function endDrag(apply){
   if(!apply||!d.over)return;
   const t=S.tasks.find(x=>x.id===d.id);if(!t)return;const [k,v]=d.over.dataset.drop.split(':');
   if(k==='plan'){if((t.plan||'')===v)return;t.plan=v;toast(v?'📌 '+planLabel(v):'กลับเข้ากองงานแล้ว')}
+  if(k==='assign'){if((t.assignee||'')===v)return;t.assignee=v;const mm=S.members.find(m=>m.id===v);toast(mm?'มอบหมายให้ '+mm.name:'ย้ายไป “ยังไม่มีคนรับ”')}
   if(k==='status'){if(t.status===v)return;setStatus(t,v);toast('ย้ายไป “'+STATUS[v].t+'”')}
   save();render();
 }
