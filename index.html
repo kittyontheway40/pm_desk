@@ -305,6 +305,7 @@ select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
 .pc2 .chk{width:18px;height:18px;border-radius:6px;margin-top:0}
 .pc2.done{background:#fafdfb}.pc2.done .t{text-decoration:line-through;color:var(--muted)}
 .pc2.done .chk{background:var(--g);border-color:var(--g)}
+.durs{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--muted)}
 .dl{--c:var(--red);font-size:13px;color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);border-radius:8px;padding:3px 7px;display:flex;gap:4px;align-items:center;cursor:pointer;min-width:0}
 .dl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dl.pe{color:#fff;background:var(--c)}
@@ -439,7 +440,7 @@ const PRIO={high:{t:'ด่วน'},med:{t:'ปกติ'},low:{t:'ไม่เ�
 const COLORS=['#8b5cf6','#ec4899','#10b981','#a855f7','#f472b6','#14b8a6','#6366f1','#f59e0b'];
 
 /* ================== data ================== */
-function newTaskObj(o={}){return Object.assign({id:uid(),title:'',projectId:'',assignee:'me',status:'todo',prio:'med',due:'',plan:'',notes:'',created:todayISO()},o)}
+function newTaskObj(o={}){return Object.assign({id:uid(),title:'',projectId:'',assignee:'me',status:'todo',prio:'med',due:'',plan:'',planEnd:'',notes:'',created:todayISO()},o)}
 const REAL_PROJECTS=['masterplan_ปิง','masterplan_สะแกกรัง','masterplan_แม่กลอง','weapใต้','weapเหนือ','weap68'];
 function cleanState(keep={}){
   return {v:1,sample:false,pristine:true,updatedAt:Date.now(),owner:keep.owner||'',syncUid:keep.syncUid,lastBackup:keep.lastBackup,
@@ -480,6 +481,14 @@ function dueLabel(iso,done){
   if(done)x='ส่ง '+thDate(iso);else if(n<0){c='late';x='เกินกำหนด '+(-n)+' วัน'}else if(n===0){c='late';x='ส่งวันนี้'}else if(n===1){c='soon';x='ส่งพรุ่งนี้'}else if(n<=7){c='soon';x='ส่งในอีก '+n+' วัน'}else x='ส่ง '+thDate(iso);
   return`<span class="due ${c}" title="กำหนดส่ง ${thDate(iso,{day:'numeric',month:'long',year:'numeric'})}">${ic('clock',13)}${x}</span>`;
 }
+const pEnd=t=>t.planEnd&&t.plan&&t.planEnd>t.plan?t.planEnd:t.plan;
+const pDays=t=>t.plan?daysBetween(t.plan,pEnd(t))+1:1;
+const onDay=(t,iso)=>!!t.plan&&t.plan<=iso&&iso<=pEnd(t);
+function setPlanRange(t,start,days){days=Math.max(1,days||1);t.plan=start||'';t.planEnd=start&&days>1?addDays(start,days-1):''}
+function planLabelT(t){if(pDays(t)<2)return planLabel(t.plan);const td=todayISO(),e=pEnd(t);
+  if(onDay(t,td))return`ทำวันนี้ (วันที่ ${daysBetween(t.plan,td)+1}/${pDays(t)})`;
+  const a=new Date(t.plan+'T00:00:00'),b=new Date(e+'T00:00:00');
+  return'ทำ '+(a.getMonth()===b.getMonth()?a.getDate():thDate(t.plan,{day:'numeric',month:'short'}))+'–'+thDate(e,{day:'numeric',month:'short'})+` (${pDays(t)} วัน)`}
 const planLabel=iso=>{const n=daysBetween(todayISO(),iso);return n===0?'ทำวันนี้':n===1?'ทำพรุ่งนี้':n===-1?'แผนเมื่อวาน':'ทำ '+thDate(iso,{weekday:'short',day:'numeric',month:'short'})};
 const chip=(o)=>`<span class="chip" style="--c:${o.c}">${o.t}</span>`;
 const opts=(list,sel,label='name')=>list.map(o=>`<option value="${esc(o.id)}" ${o.id===sel?'selected':''}>${esc(o[label])}</option>`).join('');
@@ -498,7 +507,7 @@ function taskRow(x,showP=true){
   ${showP&&p?`<span class="pn"><i style="background:${p.color}"></i>${esc(p.name)}</span>`:''}
   ${m?`<span>${ic('user',12)}${esc(m.name)}</span>`:''}
   ${x.prio==='high'&&!d?`<span class="pr">ด่วน</span>`:''}
-  ${x.plan&&!d?`<span class="plan">${ic('calendar',12)}${planLabel(x.plan)}</span>`:''}
+  ${x.plan&&!d?`<span class="plan">${ic('calendar',12)}${planLabelT(x)}</span>`:''}
   ${dueLabel(x.due,d)}
   ${!d&&x.status!=='todo'?`<span class="st" style="--c:${STATUS[x.status].c}">● ${STATUS[x.status].t}</span>`:''}
   </div></div></div>`;
@@ -513,8 +522,8 @@ function vDash(){
   const act=S.projects.filter(p=>p.status!=='done');
   const doneWk=S.tasks.filter(x=>x.status==='done'&&x.completedAt&&x.completedAt>addDays(t,-7)).length;
   const counts=ORDER.map(k=>[k,S.tasks.filter(x=>x.status===k).length]);const tot=S.tasks.length||1;
-  const todayPlan=S.tasks.filter(x=>x.plan===t).sort((a,b)=>(a.status==='done')-(b.status==='done')||prioRank[a.prio]-prioRank[b.prio]);
-  const inboxN=open.filter(x=>!x.plan).length,staleN=open.filter(x=>x.plan&&x.plan<t).length;
+  const todayPlan=S.tasks.filter(x=>onDay(x,t)).sort((a,b)=>(a.status==='done')-(b.status==='done')||prioRank[a.prio]-prioRank[b.prio]);
+  const inboxN=open.filter(x=>!x.plan).length,staleN=open.filter(x=>x.plan&&pEnd(x)<t).length;
   const h=new Date().getHours(),greet=h<12?'อรุณสวัสดิ์':h<17?'สวัสดีตอนบ่าย':'สวัสดีตอนเย็น';
   const stat=(i,k,v,c)=>`<div class="card stat ${c}"><div class="ico">${ic(i,18)}</div><div class="v">${v}</div><div class="k">${k}</div></div>`;
   const html=`
@@ -633,16 +642,16 @@ function icard(x,stale){
   ${x.prio==='high'?'<span class="pr">ด่วน</span>':''}${dueLabel(x.due,false)}</div></div>
   <button class="pick" data-act="pickDay" data-id="${x.id}" title="เลือกวันที่จะทำ">${ic('calendar',15)}</button></div>`;
 }
-function planCard(x){
-  const p=projOf(x),d=x.status==='done';
+function planCard(x,iso){
+  const p=projOf(x),d=x.status==='done',nd=pDays(x),di=iso?daysBetween(x.plan,iso)+1:1;
   return`<div class="pc2 ${d?'done':''}" data-drag="${x.id}" style="--pc:${p?p.color:'#d8c8fb'}"><span class="grip">${ic('grip',14)}</span>
-  <div class="tmain" data-act="editTask" data-id="${x.id}"><div class="t">${x.prio==='high'&&!d?'<b style="color:var(--red)">! </b>':''}${esc(x.title)}</div>${p?`<div class="pn2">${esc(p.name)}</div>`:''}</div>
+  <div class="tmain" data-act="editTask" data-id="${x.id}"><div class="t">${x.prio==='high'&&!d?'<b style="color:var(--red)">! </b>':''}${esc(x.title)}</div>${nd>1?`<div class="pn2" style="color:#7c3aed;font-weight:500">วันที่ ${di}/${nd}${di===nd?' · วันสุดท้าย':''}</div>`:''}${p?`<div class="pn2">${esc(p.name)}</div>`:''}</div>
   <button class="chk" data-act="toggle" data-id="${x.id}" title="เสร็จ">${d?ic('check',12):''}</button></div>`;
 }
 function inboxPanel(){
   const t=todayISO();
   const inbox=S.tasks.filter(x=>x.status!=='done'&&!x.plan&&(!ui.ibp||x.projectId===ui.ibp)).sort(sortTask);
-  const stale=S.tasks.filter(x=>x.status!=='done'&&x.plan&&x.plan<t).sort((a,b)=>a.plan.localeCompare(b.plan));
+  const stale=S.tasks.filter(x=>x.status!=='done'&&x.plan&&pEnd(x)<t).sort((a,b)=>a.plan.localeCompare(b.plan));
   const lim=innerWidth<=1100&&!ui.ibAll?5:1e9;
   return`<div class="card inbox" data-drop="plan:">
     <div class="ch"><span style="color:var(--p)">${ic('inbox',19)}</span><h3>กองงาน</h3><span class="kn" style="background:var(--ps)">${inbox.length}</span><span class="sp"></span>
@@ -659,7 +668,7 @@ function weekView(){
   const t=todayISO(),days=[...Array(7)].map((_,i)=>addDays(ui.wk,i));
   return`<div class="week">${days.map(iso=>{
     const d=new Date(iso+'T00:00:00'),wd=d.getDay();
-    const pl=S.tasks.filter(x=>x.plan===iso).sort((a,b)=>(a.status==='done')-(b.status==='done')||prioRank[a.prio]-prioRank[b.prio]);
+    const pl=S.tasks.filter(x=>onDay(x,iso)).sort((a,b)=>(a.status==='done')-(b.status==='done')||prioRank[a.prio]-prioRank[b.prio]);
     const dl=S.tasks.filter(x=>x.due===iso&&x.status!=='done'),pe=S.projects.filter(p=>p.end===iso);
     const nd=pl.filter(x=>x.status==='done').length;
     return`<div class="day ${iso===t?'today':''} ${wd===0||wd===6?'wkend':''}" data-drop="plan:${iso}">
@@ -668,7 +677,7 @@ function weekView(){
         <button class="btn sm ghost dadd" data-act="newTask" data-plan="${iso}" title="เพิ่มงานวันนี้">${ic('plus',14)}</button></div>
       ${pe.map(p=>`<div class="dl pe" style="--c:${p.color}" data-act="openProject" data-id="${p.id}" title="สิ้นสุดโครงการ">${ic('flag',12)}<span>สิ้นสุด: ${esc(p.name)}</span></div>`).join('')}
       ${dl.map(x=>`<div class="dl" data-act="editTask" data-id="${x.id}" title="กำหนดส่ง">${ic('clock',12)}<span>ส่ง: ${esc(x.title)}</span></div>`).join('')}
-      ${pl.map(planCard).join('')}
+      ${pl.map(x=>planCard(x,iso)).join('')}
       ${pl.length?'':'<div class="dz">วางงานที่นี่</div>'}
     </div>`}).join('')}</div>`;
 }
@@ -677,7 +686,7 @@ function monthView(){
   const total=Math.ceil((off+dim)/7)*7,t=todayISO();const cells=[];
   for(let i=0;i<total;i++){
     const d=new Date(y,mo,1-off+i),iso=fmtISO(d),inM=d.getMonth()===mo;
-    const pl=S.tasks.filter(x=>x.plan===iso).sort(sortTask),dd=S.tasks.filter(x=>x.due===iso&&x.status!=='done'),pe=S.projects.filter(p=>p.end===iso);
+    const pl=S.tasks.filter(x=>onDay(x,iso)).sort(sortTask),dd=S.tasks.filter(x=>x.due===iso&&x.status!=='done'),pe=S.projects.filter(p=>p.end===iso);
     cells.push(`<div class="cd ${inM?'':'out'} ${iso===t?'today':''}" data-drop="plan:${iso}" data-act="newTask" data-plan="${iso}" title="เพิ่มงานวันนี้"><div class="cdn">${d.getDate()}</div>
       ${pe.map(p=>`<div class="cev pe" style="--c:${p.color}" data-act="openProject" data-id="${p.id}" title="สิ้นสุดโครงการ: ${esc(p.name)}">${ic('flag',11)}<span>${esc(p.name)}</span></div>`).join('')}
       ${pl.map(x=>`<div class="cev pl ${x.status==='done'?'dn':''}" style="--c:${projOf(x)?.color||'#a78bfa'}" data-drag="${x.id}" data-act="editTask" data-id="${x.id}" title="ทำ: ${esc(x.title)}"><span>${esc(x.title)}</span></div>`).join('')}
@@ -696,12 +705,15 @@ function vCal(){
     ${wk?weekView():monthView()}</div></div>`;
   return{title:'วางแผนงาน',sub:'โยนงานลงกอง แล้วลากไปวางในวันที่จะทำ',html,actions:newTaskBtn()};
 }
-function pickDay(t){
-  const td=todayISO();
+function pickDay(t,dur){
+  const td=todayISO();dur=dur||pDays(t);ui.pickDur=dur;
   const btns=[...Array(8)].map((_,i)=>{const iso=addDays(td,i);const l=i===0?'วันนี้':i===1?'พรุ่งนี้':new Date(iso+'T00:00:00').toLocaleDateString('th-TH',{weekday:'long'});
     return`<button type="button" class="btn ${t.plan===iso?'pri':''}" data-act="setPlan" data-id="${t.id}" data-d="${iso}"><b style="font-weight:500">${l}</b><span>${thDate(iso,{day:'numeric',month:'short'})}</span></button>`}).join('');
-  modal('จะทำงานนี้วันไหน?',`<div style="font-weight:500;margin-top:-6px">${esc(t.title)}</div><div class="daypick">${btns}</div>
-    <div class="qadd"><input type="date" id="pickDate" value="${t.plan||''}"><button type="button" class="btn" data-act="setPlanInput" data-id="${t.id}">เลือกวันนี้</button></div>
+  modal('จะทำงานนี้วันไหน?',`<div style="font-weight:500;margin-top:-6px">${esc(t.title)}</div>
+    <div class="durs">ใช้เวลา ${[1,2,3,4,5,7,10].map(n=>`<button type="button" class="pchip ${n===dur?'on':''}" data-act="pickDur" data-id="${t.id}" data-n="${n}">${n} วัน</button>`).join('')}</div>
+    <div class="muted" style="font-size:13px;margin-top:-4px">เลือกจำนวนวันก่อน แล้วแตะวันเริ่มทำ</div>
+    <div class="daypick">${btns}</div>
+    <div class="qadd"><input type="date" id="pickDate" value="${t.plan||''}"><button type="button" class="btn" data-act="setPlanInput" data-id="${t.id}">เริ่มวันนี้</button></div>
     ${t.plan?`<button type="button" class="btn ghost" data-act="setPlan" data-id="${t.id}" data-d="">${ic('inbox',15)} เอากลับเข้ากองงาน</button>`:''}`,{foot:false});
 }
 
@@ -730,12 +742,12 @@ function vTeam(){
   const open=S.tasks.filter(x=>x.status!=='done'&&(!ui.tp||x.projectId===ui.tp));
   const cols=[{id:'',name:'ยังไม่มีคนรับ',role:'ลากงานไปวางที่ชื่อคนเพื่อมอบหมาย'},...S.members];
   const mx=Math.max(1,...S.members.map(m=>open.filter(x=>x.assignee===m.id).length));
-  const dayLoad=(id,d)=>open.filter(x=>x.assignee===id&&(x.plan?x.plan===d:x.due===d)).length;
+  const dayLoad=(id,d)=>open.filter(x=>x.assignee===id&&(x.plan?onDay(x,d):x.due===d)).length;
   const html=`<div class="toolbar"><select data-f="tp"><option value="">ทุกโครงการ</option>${opts(S.projects,ui.tp)}</select>
     <div class="muted" style="font-size:14px;align-self:center">ลากการ์ด (หรือจับ ⠿ บนมือถือ) ไปวางในคอลัมน์ของคนที่จะให้ทำ</div></div>
   <div class="kanban team-board">${cols.map(m=>{
     const mine=open.filter(x=>(x.assignee||'')===m.id).sort(sortTask);if(!m.id&&!mine.length&&S.members.length>1)return'';
-    const od=mine.filter(isOverdue).length,wk=mine.filter(x=>(x.plan&&x.plan<=wkEnd)||(x.due&&x.due<=wkEnd)).length;
+    const od=mine.filter(isOverdue).length,wk=mine.filter(x=>(x.plan&&x.plan<=wkEnd&&pEnd(x)>=t)||(x.due&&x.due<=wkEnd)).length;
     return`<div class="kcol tcol ${m.id?'':'none'}" data-drop="assign:${esc(m.id)}">
       <div class="mhd"><div class="mav">${m.id?esc(firstChar(m.name)):ic('inbox',18)}</div><div style="flex:1;min-width:0"><b>${esc(m.name)}</b><small>${esc(m.role)||(m.id?'แตะ ✎ เพื่อใส่ตำแหน่ง':'')}</small></div>
         ${m.id?`<button class="btn sm ghost" data-act="editMember" data-id="${esc(m.id)}" title="แก้ไข">${ic('edit',14)}</button>`:''}</div>
@@ -849,11 +861,11 @@ function taskForm(t,def={}){
   <div class="frow"><label>สถานะ<select name="status">${ORDER.map(k=>`<option value="${k}" ${x.status===k?'selected':''}>${STATUS[k].t}</option>`).join('')}</select></label>
   <label>ความสำคัญ<select name="prio">${Object.entries(PRIO).map(([k,v])=>`<option value="${k}" ${x.prio===k?'selected':''}>${v.t}</option>`).join('')}</select></label>
   </div>
-  <div class="frow"><label>วันที่จะทำ (วางแผน)<input type="date" name="plan" value="${x.plan||''}"></label><label>กำหนดส่ง (deadline)<input type="date" name="due" value="${x.due||''}"></label></div>
+  <div class="frow"><label>เริ่มทำ<input type="date" name="plan" value="${x.plan||''}"></label><label>ทำถึงวันที่ <span style="font-weight:400">(ถ้าทำหลายวัน)</span><input type="date" name="planEnd" value="${x.planEnd||''}"></label><label>กำหนดส่ง (deadline)<input type="date" name="due" value="${x.due||''}"></label></div>
   <label>รายละเอียด / หมายเหตุ<textarea name="notes" rows="3" placeholder="ลิงก์ไฟล์ ข้อสั่งการ เงื่อนไข ฯลฯ">${esc(x.notes)}</textarea></label>
   ${t&&t.completedAt?`<div class="muted" style="font-size:14px">เสร็จเมื่อ ${thDate(t.completedAt,{day:'numeric',month:'long',year:'numeric'})}</div>`:''}`;
   modal(t?'แก้ไขงาน':'งานใหม่',body,{
-    onSave:fd=>{fd.title=fd.title.trim();if(!fd.title)return false;const st=fd.status;delete fd.status;fd.assignee=memberIdByName(fd.assigneeName);delete fd.assigneeName;
+    onSave:fd=>{fd.title=fd.title.trim();if(!fd.title)return false;const st=fd.status;delete fd.status;fd.assignee=memberIdByName(fd.assigneeName);delete fd.assigneeName;if(fd.planEnd&&!fd.plan)fd.plan=fd.planEnd;if(fd.planEnd&&fd.planEnd<fd.plan){toast('“ทำถึงวันที่” ต้องไม่ก่อนวันเริ่มทำ');return false}if(fd.planEnd===fd.plan)fd.planEnd='';
       if(t){Object.assign(t,fd);setStatus(t,st)}else{const n=Object.assign(x,fd);n.status='';setStatus(n,st);S.tasks.push(n)}
       save();render();toast(t?'อัปเดตงานแล้ว':'เพิ่มงานแล้ว')},
     onDelete:t?()=>{S.tasks=S.tasks.filter(y=>y.id!==t.id);save();render();toast('ลบงานแล้ว')}:null});
@@ -908,9 +920,10 @@ const ACT={
   ibAll:()=>{ui.ibAll=true;render()},
   calMode:el=>{ui.calMode=el.dataset.m;render()},
   pickDay:(el,id)=>{const t=S.tasks.find(x=>x.id===id);t&&pickDay(t)},
-  setPlan:(el,id)=>{const t=S.tasks.find(x=>x.id===id);if(!t)return;t.plan=el.dataset.d;save();closeModal();render();toast(t.plan?'📌 '+planLabel(t.plan):'กลับเข้ากองงานแล้ว')},
+  pickDur:el=>{ui.pickDur=+el.dataset.n;el.parentElement.querySelectorAll('.pchip').forEach(c=>c.classList.toggle('on',c===el))},
+  setPlan:(el,id)=>{const t=S.tasks.find(x=>x.id===id);if(!t)return;setPlanRange(t,el.dataset.d,ui.pickDur||1);save();closeModal();render();toast(t.plan?'📌 '+planLabelT(t):'กลับเข้ากองงานแล้ว')},
   setPlanInput:(el,id)=>{const v=$('#pickDate').value;if(!v){toast('เลือกวันที่ก่อน');return}ACT.setPlan({dataset:{d:v}},id)},
-  rollToday:()=>{const t=todayISO();let n=0;S.tasks.forEach(x=>{if(x.status!=='done'&&x.plan&&x.plan<t){x.plan=t;n++}});save();render();toast(`ย้าย ${n} งานมาวันนี้แล้ว`)},
+  rollToday:()=>{const t=todayISO();let n=0;S.tasks.forEach(x=>{if(x.status!=='done'&&x.plan&&pEnd(x)<t){setPlanRange(x,t,pDays(x));n++}});save();render();toast(`ย้าย ${n} งานมาวันนี้แล้ว`)},
   newMember:()=>memberForm(null),
   editMember:(el,id)=>memberForm(S.members.find(m=>m.id===id)),
   boardFor:(el,id)=>{ui.view='board';ui.fa=id;ui.fp='';ui.q='';render()},
@@ -980,7 +993,7 @@ function endDrag(apply){
   suppressClick=true;setTimeout(()=>suppressClick=false,60);
   if(!apply||!d.over)return;
   const t=S.tasks.find(x=>x.id===d.id);if(!t)return;const [k,v]=d.over.dataset.drop.split(':');
-  if(k==='plan'){if((t.plan||'')===v)return;t.plan=v;toast(v?'📌 '+planLabel(v):'กลับเข้ากองงานแล้ว')}
+  if(k==='plan'){if((t.plan||'')===v)return;setPlanRange(t,v,v?pDays(t):1);toast(v?'📌 '+planLabelT(t):'กลับเข้ากองงานแล้ว')}
   if(k==='assign'){if((t.assignee||'')===v)return;t.assignee=v;const mm=S.members.find(m=>m.id===v);toast(mm?'มอบหมายให้ '+mm.name:'ย้ายไป “ยังไม่มีคนรับ”')}
   if(k==='status'){if(t.status===v)return;setStatus(t,v);toast('ย้ายไป “'+STATUS[v].t+'”')}
   save();render();
