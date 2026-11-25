@@ -356,6 +356,71 @@ select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
 .wload{display:flex;gap:3px;margin:0 0 10px}
 .wload span{flex:1;text-align:center;font-size:11.5px;color:var(--muted)}
 .wload b{display:block;height:22px;border-radius:6px;background:#efeaf8;margin-bottom:2px;font-size:12px;line-height:22px;color:#fff;font-weight:600}
+/* gantt */
+.gfilters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.gchip{--c:#8b5cf6;border:1.5px solid var(--c);background:#fff;color:color-mix(in srgb,var(--c) 85%,#2b2540);border-radius:99px;padding:4px 15px;font-size:14px;font-weight:600;transition:.15s}
+.gchip.on{background:var(--c);color:#fff}
+.gchip.on.soft{background:color-mix(in srgb,var(--c) 82%,#fff)}
+.gchip.all{--c:#2b2540}
+.gchip:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.gctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.gctl select{width:auto;max-width:180px;padding:5px 10px}
+.gw{position:relative;overflow:auto;max-height:calc(100vh - 300px);min-height:300px;border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow);overscroll-behavior:contain}
+.gin{position:relative}
+.ghead{position:sticky;top:0;z-index:8;display:flex;background:#fff;border-bottom:1px solid var(--line)}
+.gcorner{position:sticky;left:0;z-index:9;background:#fff;border-right:1px solid var(--line);display:flex;align-items:flex-end;padding:8px 14px;font-size:13px;color:var(--muted);flex-shrink:0;font-weight:500}
+.gscale{position:relative;flex-shrink:0;cursor:grab}
+.gm{position:absolute;top:0;height:30px;border-left:1px solid var(--line);font-size:13.5px;font-weight:600;padding:5px 8px;white-space:nowrap;overflow:hidden;color:var(--ink)}
+.gd{position:absolute;top:30px;height:30px;font-size:12px;text-align:center;color:var(--muted);line-height:1.1;padding-top:3px;border-left:1px solid #f4f1f9;overflow:hidden;white-space:nowrap}
+.gd i{display:block;font-style:normal;font-size:10px;opacity:.8}
+.gd.we{background:#faf8fd}
+.gd.td{color:#fff;background:#e5486f;border-radius:6px;font-weight:600}
+.gbody{position:relative}
+.grow{display:flex}
+.grow>.gname,.grow>.gtrack{border-bottom:1px solid var(--line)}
+.gname{position:sticky;left:0;z-index:5;background:#fff;border-right:1px solid var(--line);padding:8px 10px 8px 12px;flex-shrink:0;display:flex;flex-direction:column;gap:1px;overflow:hidden}
+.grow:hover .gname{background:#fcfaff}
+.gname>*{flex-shrink:0}
+.gn-top{display:flex;align-items:center;gap:4px;min-width:0}
+.gn-top b{font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gn-top b:hover{color:#6d3fe0;text-decoration:underline}
+.gcol{border:0;background:none;color:var(--muted);padding:0;font-size:13px;width:18px;flex-shrink:0}
+.gn-meta{font-size:12px;color:var(--muted);padding-left:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gadd{align-self:flex-start;margin:2px 0 0 16px;padding:1px 8px;font-size:12.5px}
+.gtrack{position:relative;flex-shrink:0;cursor:grab}
+.gspan{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--c) 6%,transparent);border-left:2px dashed color-mix(in srgb,var(--c) 45%,#fff);border-right:2px dashed color-mix(in srgb,var(--c) 45%,#fff)}
+.gover{position:absolute;top:0;bottom:0;pointer-events:none;z-index:1}
+.gml{position:absolute;top:0;bottom:0;border-left:1px solid #ede8f5}
+.gtoday{position:absolute;top:0;bottom:0;width:2px;background:#e5486f;z-index:3;box-shadow:0 0 0 2px rgba(229,72,111,.12)}
+.gbar{position:absolute;height:24px;border-radius:7px;z-index:2;cursor:pointer;display:flex;align-items:center;overflow:hidden;font-size:12.5px;font-weight:500;box-sizing:border-box;--c:#8b5cf6;transition:box-shadow .15s}
+.gbar.st-doing,.gbar.st-review{background:var(--c);color:#fff}
+.gbar.st-review{background:repeating-linear-gradient(135deg,var(--c) 0 8px,color-mix(in srgb,var(--c) 82%,#fff) 8px 14px)}
+.gbar.st-todo{background:color-mix(in srgb,var(--c) 20%,#fff);border:1.5px solid color-mix(in srgb,var(--c) 70%,#fff);color:color-mix(in srgb,var(--c) 72%,#2b2540)}
+.gbar.st-done{background:#edf1ee;color:#8a948d;text-decoration:line-through;border:1px solid #dde5df}
+.gbar.od{box-shadow:0 0 0 2px #e5486f}
+.gbar:hover,.gbar.gmove{box-shadow:0 6px 16px -6px rgba(60,30,120,.5);z-index:4}
+.gbar .gl{padding:0 8px 0 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;pointer-events:none}
+.gbar.mini{height:10px;border-radius:5px}
+.gav{width:17px;height:17px;border-radius:50%;background:rgba(255,255,255,.88);color:#6d3fe0;font-size:10px;display:inline-grid;place-items:center;font-weight:700;flex-shrink:0;text-decoration:none}
+.st-todo .gav{background:var(--c);color:#fff}
+.grz{position:absolute;right:0;top:0;bottom:0;width:9px;cursor:ew-resize}
+.grz:hover{background:rgba(255,255,255,.35)}
+.gout{position:absolute;z-index:2;font-size:12.5px;white-space:nowrap;line-height:22px;margin-top:1px;padding:0 5px;border-radius:6px;background:rgba(255,255,255,.88);color:var(--ink);cursor:pointer;max-width:300px;overflow:hidden;text-overflow:ellipsis}
+.gout:hover{color:#6d3fe0}
+.gout.done{color:var(--muted);text-decoration:line-through}
+.gout.late{color:#e5486f;font-weight:500}
+.gms{position:absolute;width:13px;height:13px;transform:translateX(-50%) rotate(45deg);background:var(--c);border:2px solid #fff;box-shadow:0 0 0 1.5px var(--c);z-index:2;cursor:pointer}
+.gms.od{background:#e5486f;box-shadow:0 0 0 1.5px #e5486f}
+.gms.dn{opacity:.45}
+.gdue{position:absolute;width:3px;height:24px;background:#e5486f;border-radius:2px;z-index:1;pointer-events:none}
+.gev{position:absolute;width:21px;height:21px;border-radius:50%;transform:translateX(-50%);background:var(--c);color:#fff;display:grid;place-items:center;z-index:2;cursor:pointer;box-shadow:0 0 0 2px #fff}
+.gev.past{opacity:.45}
+.gevl{line-height:21px;font-size:12.5px;color:color-mix(in srgb,var(--c) 78%,#2b2540);font-weight:500}
+.gempty{position:absolute;top:18px;font-size:12.5px;color:#c4bad8;white-space:nowrap}
+#gtip{position:fixed;z-index:300;background:var(--ink);color:#fff;font-size:13px;padding:4px 10px;border-radius:8px;pointer-events:none;display:none;white-space:nowrap}
+.gleg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:10px;align-items:center}
+.gleg .lg{display:inline-block;width:16px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
+@media (max-width:820px){.gw{max-height:calc(100vh - 330px)}.gn-meta,.gadd{display:none}.gn-top{align-items:flex-start}.gn-top b{font-size:13px;white-space:normal;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-height:1.3;word-break:break-word}.gchip{font-size:13px;padding:3px 12px}}
 /* mobile */
 @media (max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.two,.rgrid{grid-template-columns:1fr}.kv{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:820px){
@@ -642,7 +707,7 @@ function vProject(){
     <div class="calbar" style="margin-bottom:10px"><h3 class="pcal-t" style="text-align:left;min-width:0;flex:0 1 auto;margin-right:6px">ปฏิทินโครงการ</h3>
       <button class="btn sm" data-act="cal" data-d="-1">${ic('back',15)}</button><b style="min-width:120px;text-align:center;font-weight:600">${ui.cal.toLocaleDateString('th-TH',{month:'long',year:'numeric'})}</b><button class="btn sm" data-act="cal" data-d="1">${ic('next',15)}</button>
       <button class="btn sm" data-act="cal" data-d="0">เดือนนี้</button><span class="sp"></span>
-      <button class="btn sm" data-act="newEvent" data-p="${p.id}">${ic('calendar',14)} ลงนัด</button><button class="btn sm" data-act="newTask" data-p="${p.id}">${ic('plus',14)} งาน</button></div>
+      <button class="btn sm" data-act="ganttFor" data-id="${p.id}">${ic('timeline',14)} ดูใน Gantt</button><button class="btn sm" data-act="newEvent" data-p="${p.id}">${ic('calendar',14)} ลงนัด</button><button class="btn sm" data-act="newTask" data-p="${p.id}">${ic('plus',14)} งาน</button></div>
     ${monthView(p.id).replace('<div class="card" style="padding:12px">','<div>')}
     <div class="agenda m-only" style="margin-top:12px"><div class="lbl">กำหนดการเดือนนี้</div>${agenda(p.id,ui.cal.getFullYear(),ui.cal.getMonth())}</div>
   </div>
@@ -784,26 +849,147 @@ function pickDay(t,dur){
     ${t.plan?`<button type="button" class="btn ghost" data-act="setPlan" data-id="${t.id}" data-d="">${ic('inbox',15)} เอากลับเข้ากองงาน</button>`:''}`,{foot:false});
 }
 
+/* ================== Gantt timeline ================== */
+const GZ={day:{px:34,t:'วัน'},week:{px:15,t:'สัปดาห์'},month:{px:5,t:'เดือน'}};
+const gNW=()=>innerWidth<=820?118:236;
+function ganttPrefsSave(){try{localStorage.setItem('pmdesk-gantt',JSON.stringify({gf:ui.gf,gz:ui.gz,gdone:ui.gdone,gc:ui.gc,ga:ui.ga}))}catch(e){}}
+(function(){Object.assign(ui,{gf:null,gz:'week',gdone:false,gc:[],ga:'',gsx:null});try{const p=JSON.parse(localStorage.getItem('pmdesk-gantt')||'{}');if(p&&typeof p==='object')Object.assign(ui,p)}catch(e){}if(!GZ[ui.gz])ui.gz='week';if(!Array.isArray(ui.gc))ui.gc=[]})();
+const gEst=s=>Math.min(300,String(s).length*7.4+18);
+function gPack(items,gap=6){const lanes=[];items.sort((a,b)=>a.s-b.s).forEach(it=>{let i=lanes.findIndex(end=>end+gap<=it.s);if(i<0){i=lanes.length;lanes.push(0)}lanes[i]=it.e;it.lane=i});return lanes.length}
 function vTimeline(){
-  const ps=S.projects.filter(p=>p.start&&p.end&&p.end>=p.start).sort((a,b)=>a.start.localeCompare(b.start));
-  if(!ps.length)return{title:'ไทม์ไลน์',html:'<div class="card empty">ใส่วันเริ่มและวันสิ้นสุดให้โครงการเพื่อดูไทม์ไลน์</div>'};
-  const t=todayISO();let mn=ps.reduce((m,p)=>p.start<m?p.start:m,t),mx=ps.reduce((m,p)=>p.end>m?p.end:m,t);
-  const s=new Date(mn+'T00:00:00');s.setDate(1);const e=new Date(mx+'T00:00:00');e.setMonth(e.getMonth()+1,1);
-  const S0=fmtISO(s),span=daysBetween(S0,fmtISO(e));const pos=iso=>daysBetween(S0,iso)/span*100;
-  const months=[];for(let d=new Date(s);d<e;){const n=new Date(d.getFullYear(),d.getMonth()+1,1);months.push({l:d.toLocaleDateString('th-TH',{month:'short',year:'2-digit'}),x:pos(fmtISO(d)),w:pos(fmtISO(n))-pos(fmtISO(d))});d=n}
-  const grid=months.map(m=>`<div class="tl-g" style="left:${m.x}%"></div>`).join('');const tp=pos(t);
-  const rows=ps.map((p,i)=>{const pr=progress(p.id),l=pos(p.start),w=Math.max(.8,pos(addDays(p.end,1))-l);
-    const ms=projTasks(p.id).filter(x=>x.due&&x.prio==='high'&&x.status!=='done'&&x.due>=S0);
-    return`<div class="tl-row"><div class="tl-name" data-act="openProject" data-id="${p.id}"><i style="background:${p.color}"></i><span title="${esc(p.name)}">${esc(p.name)}</span></div>
-    <div class="tl-track">${grid}<div class="tl-today ${i===0?'lab':''}" style="left:${tp}%"></div>
-      <div class="tl-bar" style="left:${l}%;width:${w}%;--c:${p.color}" data-act="openProject" data-id="${p.id}" title="${thDate(p.start)} – ${thDate(p.end)}"><i style="width:${pr}%"></i><span class="${pr<20?'lo':''}">${pr}%</span></div>
-      ${S.events.filter(e=>e.projectId===p.id&&e.date>=S0).map(e=>`<div class="tl-ms" style="left:${pos(e.date)}%;--c:${(ETYPE[e.type]||ETYPE.other).c};border-radius:50%;transform:translateX(-50%)" data-act="editEvent" data-id="${e.id}" title="${(ETYPE[e.type]||ETYPE.other).t}: ${esc(e.title)} (${thDate(e.date)})"></div>`).join('')}
-      ${ms.map(x=>`<div class="tl-ms" style="left:${pos(x.due)}%;--c:${p.color}" data-act="editTask" data-id="${x.id}" title="งานด่วน: ${esc(x.title)} (${thDate(x.due)})"></div>`).join('')}
-    </div></div>`}).join('');
-  const html=`<div class="card tl"><div class="tl-in"><div class="tl-head"><div class="tl-name" style="cursor:default;color:var(--muted)">โครงการ</div><div class="tl-months">${months.map(m=>`<div class="tl-m" style="left:${m.x}%;width:${m.w}%">${m.l}</div>`).join('')}</div></div>${rows}</div>
-  <div class="legend" style="margin-top:12px"><span><b style="background:var(--pk);width:3px"></b>วันนี้</span><span>◇ งานด่วนที่ยังไม่เสร็จ</span><span>● นัดหมาย / วันส่งงาน</span><span>แถบเข้ม = ความคืบหน้า</span></div></div>`;
-  return{title:'ไทม์ไลน์',sub:'ภาพรวมระยะเวลาโครงการทั้งหมด',html};
+  const t=todayISO(),pxd=GZ[ui.gz].px,nw=gNW(),showDone=ui.gdone;
+  const taskOk=x=>(showDone||x.status!=='done')&&(!ui.ga||x.assignee===ui.ga)&&(x.plan||x.due);
+  const hasNone=S.tasks.some(x=>!x.projectId&&taskOk(x))||S.events.some(e=>!e.projectId);
+  const allProjs=S.projects.filter(p=>showDone||p.status!=='done');
+  const sel=id=>!ui.gf||ui.gf.includes(id);
+  const groups=allProjs.filter(p=>sel(p.id)).map(p=>({key:p.id,p,name:p.name,color:p.color,tasks:S.tasks.filter(x=>x.projectId===p.id&&taskOk(x)),evs:S.events.filter(e=>e.projectId===p.id)}));
+  if(hasNone&&sel('_none'))groups.push({key:'_none',p:null,name:'ไม่ระบุโครงการ',color:'#94a3b8',tasks:S.tasks.filter(x=>!x.projectId&&taskOk(x)),evs:S.events.filter(e=>!e.projectId)});
+  const undated=S.tasks.filter(x=>x.status!=='done'&&!x.plan&&!x.due&&(!ui.ga||x.assignee===ui.ga)&&sel(x.projectId||'_none')).length;
+
+  // ---- range
+  const ds=[t];groups.forEach(g=>{if(g.p){g.p.start&&ds.push(g.p.start);g.p.end&&ds.push(g.p.end)}g.tasks.forEach(x=>{if(x.plan)ds.push(x.plan,pEnd(x));if(x.due)ds.push(x.due)});g.evs.forEach(e=>ds.push(e.date))});
+  let mn=ds.reduce((a,b)=>b<a?b:a),mx=ds.reduce((a,b)=>b>a?b:a);
+  if(mn>addDays(t,-45))mn=addDays(t,-45);if(mx<addDays(t,150))mx=addDays(t,150);
+  const s0=new Date(mn+'T00:00:00');s0.setDate(1);const e0=new Date(mx+'T00:00:00');e0.setMonth(e0.getMonth()+2,0);
+  const R0=fmtISO(s0),nDays=daysBetween(R0,fmtISO(e0))+1,W=nDays*pxd,X=iso=>daysBetween(R0,iso)*pxd;
+  if(ui._g&&ui._g.R0!==R0&&ui.gsx!=null&&ui._g.pxd===pxd)ui.gsx+=daysBetween(ui._g.R0,R0)*-pxd;
+  ui._g={R0,pxd,nw};
+
+  // ---- header scale
+  const months=[];for(let d=new Date(s0);d<=e0;){const n=new Date(d.getFullYear(),d.getMonth()+1,1);const a=fmtISO(d);const w=Math.min(X(fmtISO(n)),W)-X(a);
+    months.push(`<div class="gm" style="left:${X(a)}px;width:${w}px">${d.toLocaleDateString('th-TH',w>150?{month:'long',year:'numeric'}:{month:'short',year:'2-digit'})}</div>`);d=n}
+  let dayRow='';
+  if(ui.gz!=='month')for(let i=0;i<nDays;i++){const d=new Date(s0);d.setDate(d.getDate()+i);const iso=fmtISO(d),wd=d.getDay();
+    if(ui.gz==='day')dayRow+=`<div class="gd ${wd===0||wd===6?'we':''} ${iso===t?'td':''}" style="left:${i*pxd}px;width:${pxd}px">${d.getDate()}<i>${d.toLocaleDateString('th-TH',{weekday:'narrow'})}</i></div>`;
+    else if(wd===1||iso===t)dayRow+=`<div class="gd ${iso===t?'td':''}" style="left:${i*pxd}px;width:${iso===t?pxd*2:pxd*7}px;text-align:left;padding-left:4px">${iso===t?'วันนี้':d.getDate()}</div>`}
+  const headH=ui.gz==='month'?30:60;
+  const satOff=((6-s0.getDay())+7)%7;
+  const weBg=ui.gz==='month'?'':`background-image:linear-gradient(90deg,#f8f5fc ${2*pxd}px,transparent 0);background-size:${7*pxd}px 100%;background-position:${satOff*pxd}px 0;`;
+
+  // ---- project blocks
+  const LH=30,EH=25;let nTasks=0,nEv=0;
+  const blocks=groups.map(g=>{
+    const col=ui.gc.includes(g.key),c=g.color;
+    const evI=g.evs.map(ev=>{const x=X(ev.date)+pxd/2,lbl=(ev.time?ev.time+' ':'')+ev.title;return{ev,x,lbl,s:x-10,e:x+14+gEst(lbl)}});
+    const tI=g.tasks.map(x=>{const lbl=x.title;
+      if(x.plan){const s=X(x.plan),w=pDays(x)*pxd,inside=w>=gEst(lbl)+(memOf(x)?22:0);let e=inside?s+w:s+w+8+gEst(lbl);if(x.due&&X(x.due)+pxd>e)e=X(x.due)+pxd;return{x,s,w,inside,e,kind:'bar'}}
+      const s=X(x.due);return{x,s,w:pxd,e:s+pxd/2+14+gEst('⏰ '+lbl),kind:'ms'}});
+    nTasks+=tI.length;nEv+=evI.length;
+    const evL=gPack(evI,8),tL=col?(tI.length?1:0):gPack(tI);
+    const tTop=6+evL*EH+(evL?2:0);
+    const h=Math.max(col?44:(innerWidth<=820?54:(g.p?106:76)),tTop+Math.max(1,tL)*LH+8);
+    let inner='';
+    if(g.p&&g.p.start&&g.p.end)inner+=`<div class="gspan" style="left:${X(g.p.start)}px;width:${X(g.p.end)-X(g.p.start)+pxd}px;--c:${c}" title="ช่วงโครงการ ${thDate(g.p.start)} – ${thDate(g.p.end)}"></div>`;
+    evI.forEach(it=>{const ty=ETYPE[it.ev.type]||ETYPE.other,top=6+it.lane*EH,past=it.ev.done||it.ev.date<t;
+      inner+=`<div class="gev ${past?'past':''}" data-gk="e:${it.ev.id}" data-act="editEvent" data-id="${it.ev.id}" style="left:${it.x}px;top:${top}px;--c:${ty.c}" title="${ty.t}: ${esc(it.ev.title)} · ${thDate(it.ev.date,{weekday:'short',day:'numeric',month:'short'})}${it.ev.place?' · '+esc(it.ev.place):''}">${ic(ty.i,11)}</div>
+      <span class="gout gevl ${past?'done':''}" data-act="editEvent" data-id="${it.ev.id}" style="left:${it.x+13}px;top:${top}px;--c:${ty.c}">${esc(it.lbl)}</span>`});
+    tI.forEach(it=>{const x=it.x,top=tTop+(col?0:it.lane*LH)+(col?(it.lane||0)%1:0),m=memOf(x),od=isOverdue(x);
+      const tip=`${esc(x.title)}${x.plan?' · ทำ '+thDate(x.plan)+(pDays(x)>1?' – '+thDate(pEnd(x)):''):''}${x.due?' · ส่ง '+thDate(x.due):''}${m?' · '+esc(m.name):''} · ${STATUS[x.status].t}`;
+      if(col){if(it.kind==='bar')inner+=`<div class="gbar mini st-${x.status} ${od?'od':''}" data-act="editTask" data-id="${x.id}" style="left:${it.s}px;top:${top+6}px;width:${it.w}px;--c:${c}" title="${tip}"></div>`;
+        else inner+=`<div class="gms ${od?'od':''}" data-act="editTask" data-id="${x.id}" style="left:${it.s+pxd/2}px;top:${top+4}px;--c:${c}" title="${tip}"></div>`;return}
+      if(it.kind==='bar'){
+        const av=m?`<span class="gav">${esc(firstChar(m.name))}</span>`:'';
+        inner+=`<div class="gbar st-${x.status} ${od?'od':''}" data-gk="t:${x.id}" data-act="editTask" data-id="${x.id}" style="left:${it.s}px;top:${top}px;width:${it.w}px;--c:${c}" title="${tip}">${it.inside?`<span class="gl">${av}${x.status==='done'?'✓ ':''}${esc(x.title)}</span>`:av?`<span class="gl">${av}</span>`:''}<span class="grz" title="ลากเพื่อปรับจำนวนวัน"></span></div>`;
+        if(!it.inside)inner+=`<span class="gout ${x.status==='done'?'done':''}" data-act="editTask" data-id="${x.id}" style="left:${it.s+it.w+6}px;top:${top}px">${esc(x.title)}</span>`;
+        if(x.due&&x.status!=='done')inner+=`<div class="gdue" style="left:${X(x.due)+pxd-3}px;top:${top}px" title="กำหนดส่ง ${thDate(x.due)}"></div>`;
+      }else{
+        inner+=`<div class="gms ${od?'od':''} ${x.status==='done'?'dn':''}" data-gk="t:${x.id}" data-act="editTask" data-id="${x.id}" style="left:${it.s+pxd/2}px;top:${top+5}px;--c:${c}" title="${tip}"></div>
+        <span class="gout ${x.status==='done'?'done':''} ${od?'late':''}" data-act="editTask" data-id="${x.id}" style="left:${it.s+pxd/2+12}px;top:${top}px">⏰ ${esc(x.title)}</span>`}
+    });
+    if(!tI.length&&!evI.length)inner+=`<span class="gempty" style="left:${Math.max(8,X(t)+12)}px">ยังไม่มีงานหรือนัดที่มีวันที่ — ดับเบิลคลิกตรงนี้เพื่อเพิ่มงาน</span>`;
+    const pr=g.p?progress(g.p.id):0;
+    const meta=g.p?[g.p.start&&g.p.end?`${thDate(g.p.start)} – ${thDate(g.p.end)}`:'ยังไม่ระบุช่วงโครงการ',`${pr}% · ${projTasks(g.p.id).filter(x=>x.status!=='done').length} งานค้าง`]:[`${g.tasks.length} งาน`];
+    return`<div class="grow ${col?'gcl':''}"><div class="gname" style="width:${nw}px;height:${h}px;box-shadow:inset 4px 0 0 ${c}">
+      <div class="gn-top"><button class="gcol" data-act="gcol" data-id="${g.key}" title="${col?'ขยาย':'ยุบ'}">${col?'▸':'▾'}</button>${g.p?`<b data-act="openProject" data-id="${g.p.id}" title="เปิดหน้าโครงการ">${esc(g.name)}</b>`:`<b style="cursor:default">${esc(g.name)}</b>`}</div>
+      ${meta.map(m=>`<div class="gn-meta">${m}</div>`).join('')}
+      ${col?'':`<button class="btn sm ghost gadd" data-act="newTask" data-p="${g.p?g.p.id:''}">${ic('plus',13)} งาน</button>`}</div>
+      <div class="gtrack" data-gp="${g.p?g.p.id:''}" style="width:${W}px;height:${h}px;${weBg}">${inner}</div></div>`;
+  }).join('');
+
+  const mlines=[];for(let d=new Date(s0);d<=e0;d=new Date(d.getFullYear(),d.getMonth()+1,1))mlines.push(`<div class="gml" style="left:${X(fmtISO(d))}px"></div>`);
+  const chips=[`<button class="gchip all ${!ui.gf?'on':''}" data-act="gf" data-id="all">ทั้งหมด</button>`,
+    ...allProjs.map(p=>`<button class="gchip ${sel(p.id)&&ui.gf?'on':!ui.gf?'on soft':''}" style="--c:${p.color}" data-act="gf" data-id="${p.id}">${esc(p.name)}</button>`),
+    hasNone?`<button class="gchip ${sel('_none')&&ui.gf?'on':!ui.gf?'on soft':''}" style="--c:#94a3b8" data-act="gf" data-id="_none">ไม่ระบุโครงการ</button>`:''].join('');
+
+  const html=`<div class="gfilters">${chips}</div>
+  <div class="gctl">
+    <div class="seg">${Object.entries(GZ).map(([k,v])=>`<button class="${ui.gz===k?'on':''}" data-act="gz" data-z="${k}">${v.t}</button>`).join('')}</div>
+    <button class="btn sm" data-act="gnav" data-d="-1" title="เลื่อนซ้าย">${ic('back',15)}</button><button class="btn sm" data-act="gtoday">วันนี้</button><button class="btn sm" data-act="gnav" data-d="1" title="เลื่อนขวา">${ic('next',15)}</button>
+    <select data-f="ga" title="ดูงานของใคร"><option value="">ทุกคน</option>${opts(S.members,ui.ga)}</select>
+    <button class="pchip ${ui.gdone?'on':''}" data-act="gdone">${ui.gdone?'✓ ':''}แสดงงานที่เสร็จแล้ว</button>
+    <button class="btn sm ghost" data-act="gcolAll">${groups.length&&groups.every(g=>ui.gc.includes(g.key))?'ขยายทั้งหมด':'ยุบทั้งหมด'}</button>
+    <span class="sp"></span><span class="muted" style="font-size:13px">${groups.length} โครงการ · ${nTasks} งาน · ${nEv} นัด</span>
+  </div>
+  ${groups.length?`<div class="gw" id="gw"><div class="gin" style="width:${nw+W}px">
+    <div class="ghead" style="height:${headH}px"><div class="gcorner" style="width:${nw}px">โครงการ</div><div class="gscale" style="width:${W}px;height:${headH}px">${months.join('')}${dayRow}</div></div>
+    <div class="gbody"><div class="gover" style="left:${nw}px;width:${W}px">${mlines.join('')}<div class="gtoday" style="left:${X(t)+pxd/2-1}px"></div></div>${blocks}</div>
+  </div></div>`:'<div class="card empty">ไม่มีโครงการที่ตรงกับตัวกรอง</div>'}
+  <div class="gleg"><span><b class="lg" style="background:#8b5cf6"></b>กำลังทำ / รอตรวจ</span><span><b class="lg" style="background:#ede5ff;border:1.5px solid #a78bfa"></b>ต้องทำ</span><span><b class="lg" style="background:#e5486f;width:3px"></b>กำหนดส่ง</span>
+    <span>◆ งานที่มีแต่วันส่ง</span><span>● นัดหมาย</span><span><b class="lg" style="background:#e5486f;width:2px;height:14px"></b>วันนี้</span><span><b class="lg" style="border:1.5px dashed #c4b5fd;background:#faf7ff"></b>ช่วงโครงการ</span></div>
+  <div class="gleg" style="margin-top:4px">ลากพื้นที่ว่างเพื่อเลื่อนซ้าย–ขวา · ลากแถบงานเพื่อย้ายวัน · ลากขอบขวาเพื่อปรับจำนวนวัน · ดับเบิลคลิกพื้นที่ว่างเพื่อเพิ่มงานวันนั้น
+    ${undated?` · <a href="#/calendar" style="color:#7c3aed">มี ${undated} งานยังไม่มีวันที่ → ไปกองงาน</a>`:''}</div>`;
+  return{title:'ไทม์ไลน์ · Gantt Chart',sub:'ภาพรวมงานและนัดหมายของทุกโครงการตามเวลา',html,actions:evBtn()+newTaskBtn(),after:()=>{
+    const gw=$('#gw');if(!gw)return;const vis=gw.clientWidth-nw;
+    if(ui.gsx==null)ui.gsx=X(t)-vis*0.22;
+    gw.scrollLeft=ui.gsx;gw.addEventListener('scroll',()=>{ui.gsx=gw.scrollLeft},{passive:true});
+  }};
 }
+/* gantt interactions (mouse drag on bars, pan, dblclick-to-add) */
+let gd=null;
+document.body.insertAdjacentHTML('beforeend','<div id="gtip"></div>');
+document.addEventListener('pointerdown',e=>{
+  if(e.button>0||!e.target.closest||!e.target.closest('#gw'))return;
+  const b=e.target.closest('[data-gk]');
+  if(b&&e.pointerType==='mouse'){gd={k:'item',b,rz:!!e.target.closest('.grz'),x0:e.clientX,l0:parseFloat(b.style.left),w0:parseFloat(b.style.width)||0,on:false,dd:0};return}
+  if(e.pointerType==='mouse'&&e.target.closest('.gtrack,.gscale')&&!e.target.closest('[data-act]')){const gw=$('#gw');gd={k:'pan',gw,x0:e.clientX,y0:e.clientY,sl:gw.scrollLeft,st:gw.scrollTop,on:false}}
+});
+document.addEventListener('pointermove',e=>{
+  if(!gd)return;const dx=e.clientX-gd.x0;
+  if(!gd.on){if(Math.abs(dx)<4&&(gd.k!=='pan'||Math.abs(e.clientY-gd.y0)<4))return;gd.on=true;document.body.classList.add('is-dragging');if(gd.k==='item')gd.b.classList.add('gmove')}
+  if(gd.k==='pan'){gd.gw.scrollLeft=gd.sl-dx;gd.gw.scrollTop=gd.st-(e.clientY-gd.y0);return}
+  const px=ui._g.pxd,dd=Math.round(dx/px);gd.dd=dd;
+  if(gd.rz)gd.b.style.width=Math.max(px,gd.w0+dd*px)+'px';else gd.b.style.left=(gd.l0+dd*px)+'px';
+  const [ty,id]=gd.b.dataset.gk.split(':');let txt='';
+  if(ty==='e'){const ev=S.events.find(x=>x.id===id);txt=ev?thDate(addDays(ev.date,dd),{weekday:'short',day:'numeric',month:'short'}):''}
+  else{const x=S.tasks.find(y=>y.id===id);if(x){if(x.plan){if(gd.rz){const n=Math.max(1,pDays(x)+dd);txt=`${thDate(x.plan,{day:'numeric',month:'short'})} – ${thDate(addDays(x.plan,n-1),{day:'numeric',month:'short'})} (${n} วัน)`}else{const a=addDays(x.plan,dd);txt=`${thDate(a,{weekday:'short',day:'numeric',month:'short'})}${pDays(x)>1?' – '+thDate(addDays(a,pDays(x)-1),{day:'numeric',month:'short'}):''}`}}else txt='ส่ง '+thDate(addDays(x.due,dd),{weekday:'short',day:'numeric',month:'short'})}}
+  const tip=$('#gtip');tip.textContent=txt;tip.style.display='block';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY-34)+'px';
+});
+document.addEventListener('pointerup',()=>{
+  if(!gd)return;const g=gd;gd=null;$('#gtip').style.display='none';document.body.classList.remove('is-dragging');
+  if(!g.on)return;suppressClick=true;setTimeout(()=>suppressClick=false,60);
+  if(g.k!=='item')return;if(!g.dd){render();return}
+  const [ty,id]=g.b.dataset.gk.split(':');
+  if(ty==='e'){const ev=S.events.find(x=>x.id===id);if(ev){ev.date=addDays(ev.date,g.dd);toast('📅 ย้ายนัดไป '+evWhen(ev))}}
+  else{const x=S.tasks.find(y=>y.id===id);if(x){
+    if(x.plan){if(g.rz){setPlanRange(x,x.plan,Math.max(1,pDays(x)+g.dd));toast('ปรับเป็น '+pDays(x)+' วัน')}else{setPlanRange(x,addDays(x.plan,g.dd),pDays(x));toast('📌 '+planLabelT(x))}}
+    else if(x.due){x.due=addDays(x.due,g.dd);toast('ย้ายวันส่งเป็น '+thDate(x.due))}}}
+  save();render();
+});
+document.addEventListener('dblclick',e=>{
+  const tr=e.target.closest&&e.target.closest('.gtrack');if(!tr||e.target.closest('[data-act],[data-gk]'))return;
+  const r=tr.getBoundingClientRect(),day=Math.floor((e.clientX-r.left)/ui._g.pxd);
+  taskForm(null,{projectId:tr.dataset.gp||'',plan:addDays(ui._g.R0,day)});
+});
 
 function vTeam(){
   const t=todayISO(),wkEnd=addDays(t,6),days=[...Array(7)].map((_,i)=>addDays(t,i));
@@ -1015,6 +1201,14 @@ const ACT={
   addOnDay:el=>{const d=el.dataset.d,pp=ui.view==='project'?ui.proj:'';modal('เพิ่มในวัน'+new Date(d+'T00:00:00').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long'}),
     `<div class="daypick chooser"><button type="button" class="btn" data-act="newTask" data-plan="${d}" data-p="${pp}">${ic('check',18)}<b>งานที่จะทำวันนี้</b><small>สิ่งที่ต้องลงมือทำ ติ๊กเสร็จได้</small></button>
     <button type="button" class="btn" data-act="newEvent" data-d="${d}" data-p="${pp}">${ic('calendar',18)}<b>นัดหมาย</b><small>ประชุม · นัดส่งงาน/รายงาน · นัดอื่นๆ</small></button></div>`,{foot:false})},
+  gf:el=>{const id=el.dataset.id;if(id==='all')ui.gf=null;else if(!ui.gf)ui.gf=[id];else{ui.gf=ui.gf.includes(id)?ui.gf.filter(x=>x!==id):[...ui.gf,id];if(!ui.gf.length)ui.gf=null}ganttPrefsSave();render()},
+  gz:el=>{const gw=$('#gw'),nw=gNW(),o=GZ[ui.gz].px,n=GZ[el.dataset.z].px;if(gw){const c=(gw.scrollLeft+(gw.clientWidth-nw)/2)/o;ui.gsx=c*n-(gw.clientWidth-nw)/2}ui.gz=el.dataset.z;ganttPrefsSave();render()},
+  gnav:el=>{const gw=$('#gw');gw&&gw.scrollBy({left:(+el.dataset.d)*(gw.clientWidth-gNW())*0.7,behavior:'smooth'})},
+  gtoday:()=>{const gw=$('#gw');if(!gw)return;gw.scrollTo({left:daysBetween(ui._g.R0,todayISO())*ui._g.pxd-(gw.clientWidth-gNW())*0.22,behavior:'smooth'})},
+  gdone:()=>{ui.gdone=!ui.gdone;ganttPrefsSave();render()},
+  gcol:(el,id)=>{ui.gc=ui.gc.includes(id)?ui.gc.filter(x=>x!==id):[...ui.gc,id];ganttPrefsSave();render()},
+  gcolAll:()=>{const keys=[...document.querySelectorAll('.gcol')].map(b=>b.dataset.id);ui.gc=keys.every(k=>ui.gc.includes(k))?[]:keys;ganttPrefsSave();render()},
+  ganttFor:(el,id)=>{ui.gf=[id];ui.gsx=null;ganttPrefsSave();ui.view='timeline';render();window.scrollTo(0,0)},
   calMode:el=>{ui.calMode=el.dataset.m;render()},
   pickDay:(el,id)=>{const t=S.tasks.find(x=>x.id===id);t&&pickDay(t)},
   pickDur:el=>{ui.pickDur=+el.dataset.n;el.parentElement.querySelectorAll('.pchip').forEach(c=>c.classList.toggle('on',c===el))},
@@ -1034,7 +1228,7 @@ const ACT={
 };
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=ACT[el.dataset.act];if(f){e.stopPropagation();f(el,el.dataset.id)}});
 document.addEventListener('input',e=>{const f=e.target.dataset.f;if(!f)return;ui[f]=e.target.value;
-  if(ui.view==='board')renderBoardCols();if(ui.view==='calendar'&&f==='ibp')render();if(ui.view==='team'&&f==='tp')render();if(ui.view==='report'&&$('#repText'))$('#repText').value=buildReport()});
+  if(ui.view==='board')renderBoardCols();if(ui.view==='calendar'&&f==='ibp')render();if(ui.view==='team'&&f==='tp')render();if(ui.view==='timeline'&&f==='ga'){ganttPrefsSave();render()}if(ui.view==='report'&&$('#repText'))$('#repText').value=buildReport()});
 document.addEventListener('change',e=>{
   if(e.target.id==='repMgr'){ui.repMgr=e.target.value;ui.repSel=ui.repMgr?S.projects.filter(p=>(p.manager||'').trim()===ui.repMgr&&p.status!=='done').map(p=>p.id):null;render()}
   if(e.target.classList.contains('repChk')){ui.repSel=[...document.querySelectorAll('.repChk:checked')].map(c=>c.value);$('#repText').value=buildReport()}
