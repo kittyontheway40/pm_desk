@@ -369,7 +369,11 @@ select.mini{width:auto;max-width:140px;font-size:14px;padding:4px 8px}
 .gin{position:relative}
 .ghead{position:sticky;top:0;z-index:8;display:flex;background:#fff;border-bottom:1px solid var(--line)}
 .gcorner{position:sticky;left:0;z-index:9;background:#fff;border-right:1px solid var(--line);display:flex;align-items:flex-end;padding:8px 14px;font-size:13px;color:var(--muted);flex-shrink:0;font-weight:500}
-.gscale{position:relative;flex-shrink:0;cursor:grab}
+.gscale{position:relative;flex-shrink:0;cursor:ew-resize}
+.gscale:hover{background:#fcfaff}
+.gzoom{display:flex;align-items:center;gap:2px;background:var(--soft);border-radius:11px;padding:2px 4px}
+.gzoom input{width:130px;accent-color:#8b5cf6}
+.gzoom .btn{padding:2px 9px;font-size:16px;line-height:1}
 .gm{position:absolute;top:0;height:30px;border-left:1px solid var(--line);font-size:13.5px;font-weight:600;padding:5px 8px;white-space:nowrap;overflow:hidden;color:var(--ink)}
 .gd{position:absolute;top:30px;height:30px;font-size:12px;text-align:center;color:var(--muted);line-height:1.1;padding-top:3px;border-left:1px solid #f4f1f9;overflow:hidden;white-space:nowrap}
 .gd i{display:block;font-style:normal;font-size:10px;opacity:.8}
@@ -851,13 +855,20 @@ function pickDay(t,dur){
 
 /* ================== Gantt timeline ================== */
 const GZ={day:{px:34,t:'วัน'},week:{px:15,t:'สัปดาห์'},month:{px:5,t:'เดือน'}};
+const GMIN=1.2,GMAX=96;
+const gpxToR=px=>Math.round(Math.log(px/GMIN)/Math.log(GMAX/GMIN)*1000),gRToPx=r=>GMIN*Math.pow(GMAX/GMIN,r/1000);
+let gRaf=null;const gRender=()=>{if(gRaf)return;gRaf=requestAnimationFrame(()=>{gRaf=null;render()})};
+// zoom keeping the day under anchorX (px inside the visible track) fixed
+function gZoomTo(px,anchorX,dayAnchor){const gw=$('#gw');px=Math.min(GMAX,Math.max(GMIN,px));
+  if(gw){const nw=gNW();if(anchorX==null)anchorX=(gw.clientWidth-nw)/2;if(dayAnchor==null)dayAnchor=(gw.scrollLeft+anchorX)/ui.gpx;ui.gsx=dayAnchor*px-anchorX}
+  ui.gpx=px;ganttPrefsSave();gRender()}
 const gNW=()=>innerWidth<=820?118:236;
-function ganttPrefsSave(){try{localStorage.setItem('pmdesk-gantt',JSON.stringify({gf:ui.gf,gz:ui.gz,gdone:ui.gdone,gc:ui.gc,ga:ui.ga}))}catch(e){}}
-(function(){Object.assign(ui,{gf:null,gz:'week',gdone:false,gc:[],ga:'',gsx:null});try{const p=JSON.parse(localStorage.getItem('pmdesk-gantt')||'{}');if(p&&typeof p==='object')Object.assign(ui,p)}catch(e){}if(!GZ[ui.gz])ui.gz='week';if(!Array.isArray(ui.gc))ui.gc=[]})();
+function ganttPrefsSave(){try{localStorage.setItem('pmdesk-gantt',JSON.stringify({gf:ui.gf,gpx:ui.gpx,gdone:ui.gdone,gc:ui.gc,ga:ui.ga}))}catch(e){}}
+(function(){Object.assign(ui,{gf:null,gz:'week',gdone:false,gc:[],ga:'',gsx:null});try{const p=JSON.parse(localStorage.getItem('pmdesk-gantt')||'{}');if(p&&typeof p==='object')Object.assign(ui,p)}catch(e){}if(!(ui.gpx>0))ui.gpx=GZ[ui.gz]?GZ[ui.gz].px:15;ui.gpx=Math.min(GMAX,Math.max(GMIN,ui.gpx));if(!Array.isArray(ui.gc))ui.gc=[]})();
 const gEst=s=>Math.min(300,String(s).length*7.4+18);
 function gPack(items,gap=6){const lanes=[];items.sort((a,b)=>a.s-b.s).forEach(it=>{let i=lanes.findIndex(end=>end+gap<=it.s);if(i<0){i=lanes.length;lanes.push(0)}lanes[i]=it.e;it.lane=i});return lanes.length}
 function vTimeline(){
-  const t=todayISO(),pxd=GZ[ui.gz].px,nw=gNW(),showDone=ui.gdone;
+  const t=todayISO(),pxd=ui.gpx,nw=gNW(),showDone=ui.gdone;
   const taskOk=x=>(showDone||x.status!=='done')&&(!ui.ga||x.assignee===ui.ga)&&(x.plan||x.due);
   const hasNone=S.tasks.some(x=>!x.projectId&&taskOk(x))||S.events.some(e=>!e.projectId);
   const allProjs=S.projects.filter(p=>showDone||p.status!=='done');
@@ -873,18 +884,21 @@ function vTimeline(){
   const s0=new Date(mn+'T00:00:00');s0.setDate(1);const e0=new Date(mx+'T00:00:00');e0.setMonth(e0.getMonth()+2,0);
   const R0=fmtISO(s0),nDays=daysBetween(R0,fmtISO(e0))+1,W=nDays*pxd,X=iso=>daysBetween(R0,iso)*pxd;
   if(ui._g&&ui._g.R0!==R0&&ui.gsx!=null&&ui._g.pxd===pxd)ui.gsx+=daysBetween(ui._g.R0,R0)*-pxd;
-  ui._g={R0,pxd,nw};
+  const di=[];groups.forEach(g=>{g.tasks.forEach(x=>{if(x.plan)di.push(x.plan,pEnd(x));if(x.due)di.push(x.due)});g.evs.forEach(e=>di.push(e.date))});const dd=di.length?di:ds;
+  ui._g={R0,pxd,nw,dmin:dd.reduce((a,b)=>b<a?b:a),dmax:dd.reduce((a,b)=>b>a?b:a)};
 
   // ---- header scale
   const months=[];for(let d=new Date(s0);d<=e0;){const n=new Date(d.getFullYear(),d.getMonth()+1,1);const a=fmtISO(d);const w=Math.min(X(fmtISO(n)),W)-X(a);
-    months.push(`<div class="gm" style="left:${X(a)}px;width:${w}px">${d.toLocaleDateString('th-TH',w>150?{month:'long',year:'numeric'}:{month:'short',year:'2-digit'})}</div>`);d=n}
+    const ml=w>=150?d.toLocaleDateString('th-TH',{month:'long',year:'numeric'}):w>=52?d.toLocaleDateString('th-TH',{month:'short',year:'2-digit'}):w>=26?d.toLocaleDateString('th-TH',{month:'short'}):'';
+    months.push(`<div class="gm" style="left:${X(a)}px;width:${w}px" title="${d.toLocaleDateString('th-TH',{month:'long',year:'numeric'})}">${ml}</div>`);d=n}
   let dayRow='';
-  if(ui.gz!=='month')for(let i=0;i<nDays;i++){const d=new Date(s0);d.setDate(d.getDate()+i);const iso=fmtISO(d),wd=d.getDay();
-    if(ui.gz==='day')dayRow+=`<div class="gd ${wd===0||wd===6?'we':''} ${iso===t?'td':''}" style="left:${i*pxd}px;width:${pxd}px">${d.getDate()}<i>${d.toLocaleDateString('th-TH',{weekday:'narrow'})}</i></div>`;
+  const dMode=pxd>=20?'day':pxd>=6?'week':'none';
+  if(dMode!=='none')for(let i=0;i<nDays;i++){const d=new Date(s0);d.setDate(d.getDate()+i);const iso=fmtISO(d),wd=d.getDay();
+    if(dMode==='day')dayRow+=`<div class="gd ${wd===0||wd===6?'we':''} ${iso===t?'td':''}" style="left:${i*pxd}px;width:${pxd}px">${d.getDate()}<i>${d.toLocaleDateString('th-TH',{weekday:'narrow'})}</i></div>`;
     else if(wd===1||iso===t)dayRow+=`<div class="gd ${iso===t?'td':''}" style="left:${i*pxd}px;width:${iso===t?pxd*2:pxd*7}px;text-align:left;padding-left:4px">${iso===t?'วันนี้':d.getDate()}</div>`}
-  const headH=ui.gz==='month'?30:60;
+  const headH=dMode==='none'?30:60;
   const satOff=((6-s0.getDay())+7)%7;
-  const weBg=ui.gz==='month'?'':`background-image:linear-gradient(90deg,#f8f5fc ${2*pxd}px,transparent 0);background-size:${7*pxd}px 100%;background-position:${satOff*pxd}px 0;`;
+  const weBg=pxd<6?'':`background-image:linear-gradient(90deg,#f8f5fc ${2*pxd}px,transparent 0);background-size:${7*pxd}px 100%;background-position:${satOff*pxd}px 0;`;
 
   // ---- project blocks
   const LH=30,EH=25;let nTasks=0,nEv=0;
@@ -933,7 +947,8 @@ function vTimeline(){
 
   const html=`<div class="gfilters">${chips}</div>
   <div class="gctl">
-    <div class="seg">${Object.entries(GZ).map(([k,v])=>`<button class="${ui.gz===k?'on':''}" data-act="gz" data-z="${k}">${v.t}</button>`).join('')}</div>
+    <div class="seg">${Object.entries(GZ).map(([k,v])=>`<button class="${Math.abs(ui.gpx-v.px)<.5?'on':''}" data-act="gz" data-z="${k}">${v.t}</button>`).join('')}<button data-act="gfit" title="ปรับสเกลให้เห็นทุกงานและนัดในหน้าจอเดียว">พอดีจอ</button></div>
+    <div class="gzoom" title="ยืด / หด สเกลเวลา"><button class="btn sm ghost" data-act="gzstep" data-d="-1" title="หด">−</button><input type="range" id="gzr" min="0" max="1000" value="${gpxToR(pxd)}"><button class="btn sm ghost" data-act="gzstep" data-d="1" title="ยืด">+</button></div>
     <button class="btn sm" data-act="gnav" data-d="-1" title="เลื่อนซ้าย">${ic('back',15)}</button><button class="btn sm" data-act="gtoday">วันนี้</button><button class="btn sm" data-act="gnav" data-d="1" title="เลื่อนขวา">${ic('next',15)}</button>
     <select data-f="ga" title="ดูงานของใคร"><option value="">ทุกคน</option>${opts(S.members,ui.ga)}</select>
     <button class="pchip ${ui.gdone?'on':''}" data-act="gdone">${ui.gdone?'✓ ':''}แสดงงานที่เสร็จแล้ว</button>
@@ -946,7 +961,7 @@ function vTimeline(){
   </div></div>`:'<div class="card empty">ไม่มีโครงการที่ตรงกับตัวกรอง</div>'}
   <div class="gleg"><span><b class="lg" style="background:#8b5cf6"></b>กำลังทำ / รอตรวจ</span><span><b class="lg" style="background:#ede5ff;border:1.5px solid #a78bfa"></b>ต้องทำ</span><span><b class="lg" style="background:#e5486f;width:3px"></b>กำหนดส่ง</span>
     <span>◆ งานที่มีแต่วันส่ง</span><span>● นัดหมาย</span><span><b class="lg" style="background:#e5486f;width:2px;height:14px"></b>วันนี้</span><span><b class="lg" style="border:1.5px dashed #c4b5fd;background:#faf7ff"></b>ช่วงโครงการ</span></div>
-  <div class="gleg" style="margin-top:4px">ลากพื้นที่ว่างเพื่อเลื่อนซ้าย–ขวา · ลากแถบงานเพื่อย้ายวัน · ลากขอบขวาเพื่อปรับจำนวนวัน · ดับเบิลคลิกพื้นที่ว่างเพื่อเพิ่มงานวันนั้น
+  <div class="gleg" style="margin-top:4px">ยืด/หดสเกล: ลากแถบวันที่ด้านบนซ้าย–ขวา · เลื่อนแถบปรับ · Ctrl + ล้อเมาส์ (หรือถ่างนิ้วบนทัชแพด/มือถือ) · ลากพื้นที่ว่างเพื่อเลื่อนซ้าย–ขวา · ลากแถบงานเพื่อย้ายวัน · ลากขอบขวาเพื่อปรับจำนวนวัน · ดับเบิลคลิกพื้นที่ว่างเพื่อเพิ่มงานวันนั้น
     ${undated?` · <a href="#/calendar" style="color:#7c3aed">มี ${undated} งานยังไม่มีวันที่ → ไปกองงาน</a>`:''}</div>`;
   return{title:'ไทม์ไลน์ · Gantt Chart',sub:'ภาพรวมงานและนัดหมายของทุกโครงการตามเวลา',html,actions:evBtn()+newTaskBtn(),after:()=>{
     const gw=$('#gw');if(!gw)return;const vis=gw.clientWidth-nw;
@@ -961,12 +976,14 @@ document.addEventListener('pointerdown',e=>{
   if(e.button>0||!e.target.closest||!e.target.closest('#gw'))return;
   const b=e.target.closest('[data-gk]');
   if(b&&e.pointerType==='mouse'){gd={k:'item',b,rz:!!e.target.closest('.grz'),x0:e.clientX,l0:parseFloat(b.style.left),w0:parseFloat(b.style.width)||0,on:false,dd:0};return}
-  if(e.pointerType==='mouse'&&e.target.closest('.gtrack,.gscale')&&!e.target.closest('[data-act]')){const gw=$('#gw');gd={k:'pan',gw,x0:e.clientX,y0:e.clientY,sl:gw.scrollLeft,st:gw.scrollTop,on:false}}
+  if(e.target.closest('.gscale')&&(e.pointerType==='mouse'||e.pointerType==='pen')){const gw=$('#gw'),ax=e.clientX-gw.getBoundingClientRect().left-gNW();gd={k:'zoom',x0:e.clientX,y0:e.clientY,px0:ui.gpx,ax,day:(gw.scrollLeft+ax)/ui.gpx,on:false};return}
+  if(e.pointerType==='mouse'&&e.target.closest('.gtrack')&&!e.target.closest('[data-act]')){const gw=$('#gw');gd={k:'pan',gw,x0:e.clientX,y0:e.clientY,sl:gw.scrollLeft,st:gw.scrollTop,on:false}}
 });
 document.addEventListener('pointermove',e=>{
   if(!gd)return;const dx=e.clientX-gd.x0;
   if(!gd.on){if(Math.abs(dx)<4&&(gd.k!=='pan'||Math.abs(e.clientY-gd.y0)<4))return;gd.on=true;document.body.classList.add('is-dragging');if(gd.k==='item')gd.b.classList.add('gmove')}
   if(gd.k==='pan'){gd.gw.scrollLeft=gd.sl-dx;gd.gw.scrollTop=gd.st-(e.clientY-gd.y0);return}
+  if(gd.k==='zoom'){gZoomTo(gd.px0*Math.exp(dx/160),gd.ax,gd.day);const tip=$('#gtip');tip.textContent=ui.gpx>=20?'มุมมองรายวัน':ui.gpx>=6?'มุมมองรายสัปดาห์':'มุมมองรายเดือน';tip.style.display='block';tip.style.left=(e.clientX+14)+'px';tip.style.top=(e.clientY+18)+'px';return}
   const px=ui._g.pxd,dd=Math.round(dx/px);gd.dd=dd;
   if(gd.rz)gd.b.style.width=Math.max(px,gd.w0+dd*px)+'px';else gd.b.style.left=(gd.l0+dd*px)+'px';
   const [ty,id]=gd.b.dataset.gk.split(':');let txt='';
@@ -985,6 +1002,15 @@ document.addEventListener('pointerup',()=>{
     else if(x.due){x.due=addDays(x.due,g.dd);toast('ย้ายวันส่งเป็น '+thDate(x.due))}}}
   save();render();
 });
+document.addEventListener('input',e=>{if(e.target.id==='gzr')gZoomTo(gRToPx(+e.target.value))});
+document.addEventListener('wheel',e=>{const gw=e.target.closest&&e.target.closest('#gw');if(!gw)return;
+  const onScale=!!e.target.closest('.gscale');if(!(e.ctrlKey||e.metaKey||onScale))return;e.preventDefault();
+  const ax=e.clientX-gw.getBoundingClientRect().left-gNW();gZoomTo(ui.gpx*Math.exp(-(e.deltaY||e.deltaX)*(e.ctrlKey?0.0035:0.0025)),Math.max(0,ax));},{passive:false});
+let gpin=null;
+document.addEventListener('touchstart',e=>{const gw=e.target.closest&&e.target.closest('#gw');if(!gw||e.touches.length!==2)return;
+  const [a,b]=e.touches,mid=(a.clientX+b.clientX)/2,ax=mid-gw.getBoundingClientRect().left-gNW();gpin={d0:Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY),px0:ui.gpx,ax,day:(gw.scrollLeft+ax)/ui.gpx}},{passive:true});
+document.addEventListener('touchmove',e=>{if(!gpin||e.touches.length!==2)return;e.preventDefault();const [a,b]=e.touches;gZoomTo(gpin.px0*Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY)/gpin.d0,gpin.ax,gpin.day)},{passive:false});
+document.addEventListener('touchend',e=>{if(e.touches.length<2)gpin=null});
 document.addEventListener('dblclick',e=>{
   const tr=e.target.closest&&e.target.closest('.gtrack');if(!tr||e.target.closest('[data-act],[data-gk]'))return;
   const r=tr.getBoundingClientRect(),day=Math.floor((e.clientX-r.left)/ui._g.pxd);
@@ -1202,7 +1228,9 @@ const ACT={
     `<div class="daypick chooser"><button type="button" class="btn" data-act="newTask" data-plan="${d}" data-p="${pp}">${ic('check',18)}<b>งานที่จะทำวันนี้</b><small>สิ่งที่ต้องลงมือทำ ติ๊กเสร็จได้</small></button>
     <button type="button" class="btn" data-act="newEvent" data-d="${d}" data-p="${pp}">${ic('calendar',18)}<b>นัดหมาย</b><small>ประชุม · นัดส่งงาน/รายงาน · นัดอื่นๆ</small></button></div>`,{foot:false})},
   gf:el=>{const id=el.dataset.id;if(id==='all')ui.gf=null;else if(!ui.gf)ui.gf=[id];else{ui.gf=ui.gf.includes(id)?ui.gf.filter(x=>x!==id):[...ui.gf,id];if(!ui.gf.length)ui.gf=null}ganttPrefsSave();render()},
-  gz:el=>{const gw=$('#gw'),nw=gNW(),o=GZ[ui.gz].px,n=GZ[el.dataset.z].px;if(gw){const c=(gw.scrollLeft+(gw.clientWidth-nw)/2)/o;ui.gsx=c*n-(gw.clientWidth-nw)/2}ui.gz=el.dataset.z;ganttPrefsSave();render()},
+  gz:el=>gZoomTo(GZ[el.dataset.z].px),
+  gzstep:el=>gZoomTo(ui.gpx*(+el.dataset.d>0?1.35:1/1.35)),
+  gfit:()=>{const gw=$('#gw');if(!gw)return;const g=ui._g,vis=gw.clientWidth-gNW()-40,n=Math.max(7,daysBetween(g.dmin,g.dmax)+1),px=Math.min(GMAX,Math.max(GMIN,vis/n));ui.gsx=daysBetween(g.R0,g.dmin)*px-20;ui.gpx=px;ganttPrefsSave();render()},
   gnav:el=>{const gw=$('#gw');gw&&gw.scrollBy({left:(+el.dataset.d)*(gw.clientWidth-gNW())*0.7,behavior:'smooth'})},
   gtoday:()=>{const gw=$('#gw');if(!gw)return;gw.scrollTo({left:daysBetween(ui._g.R0,todayISO())*ui._g.pxd-(gw.clientWidth-gNW())*0.22,behavior:'smooth'})},
   gdone:()=>{ui.gdone=!ui.gdone;ganttPrefsSave();render()},
